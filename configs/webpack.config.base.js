@@ -7,7 +7,12 @@ import webpack from 'webpack';
 import { dependencies as externals } from '../app/package.json';
 
 export default {
-  externals: [...Object.keys(externals || {})],
+  externals: [
+    ...Object.keys(externals || {}),
+    {
+      knex: 'commonjs knex',
+    },
+  ],
 
   module: {
     rules: [

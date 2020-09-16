@@ -16,11 +16,22 @@ const CounterPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 
+const LazyCustomersPage = React.lazy(() =>
+  import(/* webpackChunkName: "CustomerPage" */ './containers/CustomersPage')
+);
+
+const CustomersPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazyCustomersPage {...props} />
+  </React.Suspense>
+);
+
 export default function Routes() {
   return (
     <App>
       <Switch>
         <Route path={routes.COUNTER} component={CounterPage} />
+        <Route path={routes.CUSTOMERS} component={CustomersPage} />
         <Route path={routes.HOME} component={HomePage} />
       </Switch>
     </App>
