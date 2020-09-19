@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "1.3.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "lpe-order-management",
+  "productName": "Gestão de Encomendas",
+  "version": "0.0.1",
+  "description": "Gestão de Encomendas para a Livraria e Papelaria Espaço",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -52,8 +52,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "Gestão de Encomendas",
+    "appId": "pt.lpespaco.order-management",
     "files": [
       "dist/",
       "node_modules/",
@@ -96,40 +96,23 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate",
-      "private": false
+      "owner": "livraria-papelaria-espaco",
+      "repo": "lpe-order-management",
+      "private": true
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/livraria-papelaria-espaco/lpe-order-management.git"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Diogo Correia",
+    "email": "me@diogotc.com",
+    "url": "https://diogotc.com"
   },
-  "contributors": [
-    {
-      "name": "Vikram Rangaraj",
-      "email": "vikr01@icloud.com",
-      "url": "https://github.com/vikr01"
-    },
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    },
-    {
-      "name": "John Tran",
-      "email": "jptran318@gmail.com",
-      "url": "https://github.com/jooohhn"
-    }
-  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/livraria-papelaria-espaco/lpe-order-management/issues"
   },
   "keywords": [
     "electron",
@@ -143,7 +126,7 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/livraria-papelaria-espaco/lpe-order-management#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
@@ -279,12 +262,9 @@
     "clsx": "^1.1.1",
     "connected-react-router": "^6.6.1",
     "electron-debug": "^3.1.0",
-    "electron-json-config": "^1.5.3",
     "electron-log": "^4.2.2",
     "electron-updater": "^4.3.1",
     "history": "^4.7.2",
-    "knex": "^0.21.5",
-    "mysql2": "^2.1.0",
     "notistack": "^1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.12.0",
@@ -300,9 +280,6 @@
     "node": ">=7.x",
     "npm": ">=4.x",
     "yarn": ">=0.21.3"
-  },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "browserslist": [],
   "prettier": {

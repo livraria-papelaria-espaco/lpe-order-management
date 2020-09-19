@@ -29,8 +29,6 @@ if (!exists(file)) {
   credentials = JSON.parse(fs.readFileSync(file, { encoding: 'utf-8' }));
 }
 
-console.log(credentials);
-
 const connection = {
   client: 'mysql2',
   connection: credentials,
