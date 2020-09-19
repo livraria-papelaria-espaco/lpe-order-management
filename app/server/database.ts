@@ -1,15 +1,39 @@
 /* eslint-disable no-console */
+import electron from 'electron';
+import fs from 'fs';
 import knex from 'knex';
 import path from 'path';
 
-const connection = {
-  client: 'mysql2',
-  connection: {
+const exists = (file: string) => {
+  try {
+    fs.statSync(file);
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+const file = path.join(electron.app.getPath('userData'), 'mysql.json');
+
+let credentials;
+
+if (!exists(file)) {
+  credentials = {
     host: '127.0.0.1',
     user: 'root',
-    password: 'password123',
+    password: '',
     database: 'lpe_order_management',
-  },
+  };
+  fs.writeFileSync(file, JSON.stringify(credentials));
+} else {
+  credentials = JSON.parse(fs.readFileSync(file, { encoding: 'utf-8' }));
+}
+
+console.log(credentials);
+
+const connection = {
+  client: 'mysql2',
+  connection: credentials,
 };
 
 const db = knex(connection);
