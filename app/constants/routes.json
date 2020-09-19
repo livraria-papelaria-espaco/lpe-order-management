@@ -2,5 +2,6 @@
   "HOME": "/",
   "COUNTER": "/counter",
   "CUSTOMERS": "/customers",
-  "CUSTOMER": "/customer/:id"
+  "CUSTOMER": "/customers/:id",
+  "ORDERS": "/orders"
 }

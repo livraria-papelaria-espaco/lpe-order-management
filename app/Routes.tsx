@@ -42,8 +42,8 @@ export default function Routes() {
     <App>
       <Switch>
         <Route path={routes.COUNTER} component={CounterPage} />
-        <Route path={routes.CUSTOMERS} component={CustomersPage} />
         <Route path={routes.CUSTOMER} component={CustomerPage} />
+        <Route path={routes.CUSTOMERS} component={CustomersPage} />
         <Route path={routes.HOME} component={HomePage} />
       </Switch>
     </App>

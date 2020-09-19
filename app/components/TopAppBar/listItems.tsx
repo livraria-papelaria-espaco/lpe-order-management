@@ -11,27 +11,23 @@ import LayersIcon from '@material-ui/icons/Layers';
 import PeopleIcon from '@material-ui/icons/People';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import React from 'react';
+import routes from '../../constants/routes.json';
+import LinkItem from './LinkItem';
 
 export const mainListItems = (
   <div>
-    <ListItem button>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Encomendas" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Clientes" />
-    </ListItem>
+    <LinkItem
+      icon={<DashboardIcon />}
+      text="Dashboard"
+      to={routes.HOME}
+      exact
+    />
+    <LinkItem
+      icon={<ShoppingCartIcon />}
+      text="Encomendas"
+      to={routes.ORDERS}
+    />
+    <LinkItem icon={<PeopleIcon />} text="Clientes" to={routes.CUSTOMERS} />
     <ListItem button>
       <ListItemIcon>
         <BarChartIcon />
