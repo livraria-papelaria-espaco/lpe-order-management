@@ -1,6 +1,7 @@
 /* eslint react/jsx-props-no-spreading: off */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import Loading from './components/Loading';
 import routes from './constants/routes.json';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
@@ -11,7 +12,7 @@ const LazyCounterPage = React.lazy(() =>
 );
 
 const CounterPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
+  <React.Suspense fallback={<Loading />}>
     <LazyCounterPage {...props} />
   </React.Suspense>
 );
@@ -21,7 +22,7 @@ const LazyCustomersPage = React.lazy(() =>
 );
 
 const CustomersPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
+  <React.Suspense fallback={<Loading />}>
     <LazyCustomersPage {...props} />
   </React.Suspense>
 );
@@ -31,7 +32,7 @@ const LazyCustomerPage = React.lazy(() =>
 );
 
 const CustomerPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
+  <React.Suspense fallback={<Loading />}>
     <LazyCustomerPage {...props} />
   </React.Suspense>
 );

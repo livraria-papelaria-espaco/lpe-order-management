@@ -1,9 +1,10 @@
-import { Button, IconButton, makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import BackIcon from '@material-ui/icons/ArrowBackRounded';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import CustomerData from '../components/CustomerPage/CustomerData';
+import Loading from '../components/Loading';
 import { CustomerPage } from '../types/database';
 
 const { ipcRenderer } = window.require('electron');
@@ -37,8 +38,7 @@ export default function CustomersPage() {
     });
   }, [enqueueSnackbar, history, id]);
 
-  // TODO add pretty loader
-  if (!data) return <div>A carregar...</div>;
+  if (!data) return <Loading />;
 
   return (
     <div>
