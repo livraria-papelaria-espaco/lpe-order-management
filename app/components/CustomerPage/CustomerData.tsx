@@ -6,11 +6,11 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/EditRounded';
 import DeleteIcon from '@material-ui/icons/DeleteRounded';
+import EditIcon from '@material-ui/icons/EditRounded';
 import SaveIcon from '@material-ui/icons/SaveRounded';
-import React, { useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
+import React, { useState } from 'react';
 import { Customer } from '../../types/database';
 
 const { ipcRenderer } = window.require('electron');
@@ -56,25 +56,36 @@ export default function CustomerData({ customer }: Props) {
       phone,
       email,
     });
-    setEdit(false);
-  };
-
-  useEffect(() => {
-    ipcRenderer.on('db-result-customer-update', (_, success) => {
-      if (success)
+    ipcRenderer.once('db-result-customer-update', (_, success) => {
+      if (success) {
         enqueueSnackbar('Alterações efetuadas com sucesso!', {
           variant: 'success',
         });
-      else enqueueSnackbar('Erro ao guardar alterações', { variant: 'error' });
+        return;
+      }
+      enqueueSnackbar('Já existe um cliente com esse telemóvel e/ou email!', {
+        variant: 'error',
+      });
+      setName(customer?.name);
+      setPhone(customer?.phone);
+      setEmail(customer?.email);
     });
-  }, [enqueueSnackbar]);
+    setEdit(false);
+  };
 
   return (
     <Paper className={classes.paper}>
       <div className={classes.toolbar}>
-        <Typography variant="h4" className={classes.title}>
-          {customer?.name || 'Cliente'}
-        </Typography>
+        <div className={classes.title}>
+          <Typography variant="h4">{customer?.name || 'Cliente'}</Typography>
+          <Typography variant="caption" color="textSecondary">
+            {`Adicionado em ${customer.created_at.toLocaleString(
+              'pt-PT'
+            )} | Última atualização em ${customer.updated_at.toLocaleString(
+              'pt-PT'
+            )}`}
+          </Typography>
+        </div>
         <IconButton onClick={toggleEdit} color="secondary">
           {edit ? <SaveIcon /> : <EditIcon />}
         </IconButton>

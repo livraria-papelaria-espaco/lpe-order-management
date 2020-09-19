@@ -28,11 +28,13 @@ export default function CustomerAddDialog({ open, handleClose }: Props) {
   ) => fn(evt.target.value);
 
   const handleSubmit = () => {
-    ipcRenderer.send('db-customers-insert', { name, phone, email });
     handleClose();
-    setName('');
-    setPhone('');
-    setEmail('');
+    if (name) {
+      ipcRenderer.send('db-customers-insert', { name, phone, email });
+      setName('');
+      setPhone('');
+      setEmail('');
+    }
   };
 
   useEffect(() => {

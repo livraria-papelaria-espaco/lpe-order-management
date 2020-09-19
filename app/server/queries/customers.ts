@@ -43,14 +43,15 @@ ipcMain.on('db-customer-find-one', async (event: IpcMainEvent, id: number) => {
 ipcMain.on(
   'db-customer-update',
   async (event: IpcMainEvent, args: CustomerInsertArgs) => {
-    console.log(args);
     try {
-      await db('customers')
-        .where('id', args.id)
-        .update({ name: args.name, phone: args.phone, email: args.email });
+      await db('customers').where('id', args.id).update({
+        name: args.name,
+        phone: args.phone,
+        email: args.email,
+        updated_at: db.fn.now(),
+      });
       event.reply('db-result-customer-update', true);
     } catch (e) {
-      console.error(e);
       event.reply('db-result-customer-update', false);
     }
   }

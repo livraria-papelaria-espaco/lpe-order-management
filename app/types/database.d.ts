@@ -3,6 +3,8 @@ export type Customer = {
   name: string;
   phone: string;
   email: string;
+  created_at: Date;
+  updated_at: Date;
 };
 
 export type CustomerPage = {

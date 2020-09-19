@@ -1,4 +1,5 @@
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -9,6 +10,7 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
+import SeeIcon from '@material-ui/icons/VisibilityRounded';
 import { Customer } from '../../types/database';
 import routes from '../../constants/routes.json';
 
@@ -19,11 +21,12 @@ export default function CustomerList() {
   const history = useHistory();
 
   useEffect(() => {
-    ipcRenderer.on('db-result-customers-find', (_, args) =>
+    ipcRenderer.once('db-result-customers-find', (_, args) =>
       setCustomers([...args])
     );
     ipcRenderer.send('db-customers-find');
 
+    // TODO
     ipcRenderer.on('db-result-customers-insert', (_, args) => {
       // Update view if a new customer is added
       if (args) ipcRenderer.send('db-customers-find');
@@ -37,8 +40,9 @@ export default function CustomerList() {
           <TableHead>
             <TableRow>
               <TableCell>Nome</TableCell>
-              <TableCell align="right">Telemóvel</TableCell>
-              <TableCell align="right">Email</TableCell>
+              <TableCell>Telemóvel</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell padding="checkbox" align="right" />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -55,8 +59,13 @@ export default function CustomerList() {
                 <TableCell component="th" scope="row">
                   {customer.name}
                 </TableCell>
-                <TableCell align="right">{customer.phone}</TableCell>
-                <TableCell align="right">{customer.email}</TableCell>
+                <TableCell>{customer.phone}</TableCell>
+                <TableCell>{customer.email}</TableCell>
+                <TableCell padding="checkbox" align="right">
+                  <Button startIcon={<SeeIcon />} color="primary">
+                    Ver&nbsp;&amp;&nbsp;Editar
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -1,9 +1,18 @@
+import { Button, IconButton, makeStyles } from '@material-ui/core';
+import BackIcon from '@material-ui/icons/ArrowBackRounded';
+import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import CustomerData from '../components/CustomerPage/CustomerData';
 import { CustomerPage } from '../types/database';
 
 const { ipcRenderer } = window.require('electron');
+
+const useStyles = makeStyles((theme) => ({
+  backButton: {
+    marginBottom: theme.spacing(2),
+  },
+}));
 
 type ParamType = {
   id: string | undefined;
@@ -12,19 +21,34 @@ type ParamType = {
 export default function CustomersPage() {
   const { id } = useParams<ParamType>();
   const [data, setData] = useState<CustomerPage>();
+  const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
+  const classes = useStyles();
 
   useEffect(() => {
     ipcRenderer.send('db-customer-find-one', id);
-    ipcRenderer.on('db-result-customer-find-one', (_, response) => {
+    ipcRenderer.once('db-result-customer-find-one', (_, response) => {
+      if (!response) {
+        enqueueSnackbar('Cliente não encontrado', { variant: 'error' });
+        history.goBack();
+        return;
+      }
       setData(response);
     });
-  }, [id]);
+  }, [enqueueSnackbar, history, id]);
 
   // TODO add pretty loader
   if (!data) return <div>A carregar...</div>;
 
   return (
     <div>
+      <Button
+        onClick={() => history.goBack()}
+        startIcon={<BackIcon />}
+        className={classes.backButton}
+      >
+        VOLTAR
+      </Button>
       <CustomerData customer={data?.customer} />
     </div>
   );
