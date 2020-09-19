@@ -8,11 +8,11 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
 import SeeIcon from '@material-ui/icons/VisibilityRounded';
-import { Customer } from '../../types/database';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import routes from '../../constants/routes.json';
+import { Customer } from '../../types/database';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -20,18 +20,29 @@ export default function CustomerList() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const history = useHistory();
 
-  useEffect(() => {
+  const refreshView = useCallback(() => {
     ipcRenderer.once('db-result-customers-find', (_, args) =>
       setCustomers([...args])
     );
     ipcRenderer.send('db-customers-find');
-
-    // TODO
-    ipcRenderer.on('db-result-customers-insert', (_, args) => {
-      // Update view if a new customer is added
-      if (args) ipcRenderer.send('db-customers-find');
-    });
   }, []);
+  const handleEventRefresh = useCallback(
+    (_, sucess) => sucess && refreshView(),
+    [refreshView]
+  );
+
+  useEffect(() => {
+    refreshView();
+
+    ipcRenderer.on('db-result-customers-insert', handleEventRefresh);
+
+    return () => {
+      ipcRenderer.removeListener(
+        'db-result-customers-insert',
+        handleEventRefresh
+      );
+    };
+  }, [handleEventRefresh, refreshView]);
 
   return (
     <div>
