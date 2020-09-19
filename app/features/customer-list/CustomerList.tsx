@@ -8,18 +8,26 @@ import {
   TableRow,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import { Customer } from '../../types/database';
+import routes from '../../constants/routes.json';
 
 const { ipcRenderer } = window.require('electron');
 
 export default function CustomerList() {
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const history = useHistory();
 
   useEffect(() => {
     ipcRenderer.on('db-result-customers-find', (_, args) =>
       setCustomers([...args])
     );
     ipcRenderer.send('db-customers-find');
+
+    ipcRenderer.on('db-result-customers-insert', (_, args) => {
+      // Update view if a new customer is added
+      if (args) ipcRenderer.send('db-customers-find');
+    });
   }, []);
 
   return (
@@ -35,7 +43,15 @@ export default function CustomerList() {
           </TableHead>
           <TableBody>
             {customers.map((customer: Customer) => (
-              <TableRow key={customer.id}>
+              <TableRow
+                hover
+                onClick={() => {
+                  history.push(
+                    routes.CUSTOMER.replace(':id', `${customer.id}`)
+                  );
+                }}
+                key={customer.id}
+              >
                 <TableCell component="th" scope="row">
                   {customer.name}
                 </TableCell>

@@ -1,11 +1,12 @@
-import React from 'react';
-import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
-import { hot } from 'react-hot-loader/root';
 import { History } from 'history';
-import { Store } from '../store';
+import { SnackbarProvider } from 'notistack';
+import React from 'react';
+import { hot } from 'react-hot-loader/root';
+import { Provider } from 'react-redux';
+import 'typeface-roboto/index.css';
 import Routes from '../Routes';
-import 'fontsource-roboto';
+import { Store } from '../store';
 
 type Props = {
   store: Store;
@@ -14,9 +15,11 @@ type Props = {
 
 const Root = ({ store, history }: Props) => (
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <Routes />
-    </ConnectedRouter>
+    <SnackbarProvider autoHideDuration={8000}>
+      <ConnectedRouter history={history}>
+        <Routes />
+      </ConnectedRouter>
+    </SnackbarProvider>
   </Provider>
 );
 

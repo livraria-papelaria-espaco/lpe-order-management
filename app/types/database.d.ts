@@ -4,3 +4,7 @@ export type Customer = {
   phone: string;
   email: string;
 };
+
+export type CustomerPage = {
+  customer: Customer;
+};
