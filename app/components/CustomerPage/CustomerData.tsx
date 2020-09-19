@@ -6,12 +6,12 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/DeleteRounded';
 import EditIcon from '@material-ui/icons/EditRounded';
 import SaveIcon from '@material-ui/icons/SaveRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { Customer } from '../../types/database';
+import CustomerDelete from './CustomerDelete';
 
 const { ipcRenderer } = window.require('electron');
 
@@ -77,7 +77,7 @@ export default function CustomerData({ customer }: Props) {
     <Paper className={classes.paper}>
       <div className={classes.toolbar}>
         <div className={classes.title}>
-          <Typography variant="h4">{customer?.name || 'Cliente'}</Typography>
+          <Typography variant="h4">{name || 'Cliente'}</Typography>
           <Typography variant="caption" color="textSecondary">
             {`Adicionado em ${customer.created_at.toLocaleString(
               'pt-PT'
@@ -86,12 +86,12 @@ export default function CustomerData({ customer }: Props) {
             )}`}
           </Typography>
         </div>
-        <IconButton onClick={toggleEdit} color="secondary">
-          {edit ? <SaveIcon /> : <EditIcon />}
-        </IconButton>
-        <IconButton>
-          <DeleteIcon />
-        </IconButton>
+        <div>
+          <IconButton onClick={toggleEdit} color="secondary">
+            {edit ? <SaveIcon /> : <EditIcon />}
+          </IconButton>
+          <CustomerDelete id={customer?.id} />
+        </div>
       </div>
       <Grid container spacing={2}>
         <Grid item xs={12}>

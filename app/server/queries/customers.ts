@@ -56,3 +56,12 @@ ipcMain.on(
     }
   }
 );
+
+ipcMain.on('db-customer-delete', async (event: IpcMainEvent, id: number) => {
+  try {
+    await db('customers').where('id', id).del();
+    event.reply('db-result-customer-delete', true);
+  } catch (e) {
+    event.reply('db-result-customer-delete', false);
+  }
+});
