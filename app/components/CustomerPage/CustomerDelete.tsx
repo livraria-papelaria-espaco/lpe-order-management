@@ -12,7 +12,7 @@ import { useSnackbar } from 'notistack';
 import React from 'react';
 import { useHistory } from 'react-router';
 
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = require('electron');
 
 type Props = {
   id: number;

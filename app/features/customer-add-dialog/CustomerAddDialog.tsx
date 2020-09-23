@@ -9,7 +9,7 @@ import {
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = require('electron');
 
 type Props = {
   open: boolean;

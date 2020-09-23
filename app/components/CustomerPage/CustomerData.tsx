@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 import { Customer } from '../../types/database';
 import CustomerDelete from './CustomerDelete';
 
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = require('electron');
 
 const useStyles = makeStyles((theme) => ({
   paper: {

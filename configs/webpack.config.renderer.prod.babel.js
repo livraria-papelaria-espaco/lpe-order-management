@@ -126,6 +126,7 @@ export default merge(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
+            publicPath: './',
             limit: 10000,
             mimetype: 'application/font-woff',
           },
@@ -137,6 +138,7 @@ export default merge(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
+            publicPath: './',
             limit: 10000,
             mimetype: 'application/font-woff',
           },
@@ -148,6 +150,7 @@ export default merge(baseConfig, {
         use: {
           loader: 'url-loader',
           options: {
+            publicPath: './',
             limit: 10000,
             mimetype: 'application/octet-stream',
           },

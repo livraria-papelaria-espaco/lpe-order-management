@@ -7,7 +7,7 @@ import CustomerData from '../components/CustomerPage/CustomerData';
 import Loading from '../components/Loading';
 import { CustomerPage } from '../types/database';
 
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = require('electron');
 
 const useStyles = makeStyles((theme) => ({
   backButton: {

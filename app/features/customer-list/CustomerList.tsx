@@ -14,7 +14,7 @@ import { useHistory } from 'react-router';
 import routes from '../../constants/routes.json';
 import { Customer } from '../../types/database';
 
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer } = require('electron');
 
 export default function CustomerList() {
   const [customers, setCustomers] = useState<Customer[]>([]);
