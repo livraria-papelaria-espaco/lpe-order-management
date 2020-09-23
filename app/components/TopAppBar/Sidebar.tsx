@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { DRAWER_WIDTH } from '../../constants/drawer.json';
 import { mainListItems, secondaryListItems } from './listItems';
+import VersionIndicator from './versionIndicator';
 
 const useStyles = makeStyles((theme) => ({
   toolbarIcon: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    overflow: 'hidden',
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -38,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9),
     },
+  },
+  grow: {
+    flexGrow: 1,
   },
 }));
 
@@ -66,6 +71,13 @@ export default function Sidebar({ open, handleDrawerClose }: Props) {
       <List>{mainListItems}</List>
       <Divider />
       <List>{secondaryListItems}</List>
+      <div className={classes.grow} />
+      {open && (
+        <>
+          <Divider />
+          <VersionIndicator />
+        </>
+      )}
     </Drawer>
   );
 }
