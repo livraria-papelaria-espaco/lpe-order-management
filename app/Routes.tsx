@@ -11,6 +11,7 @@ const LazyCounterPage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CounterPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<Loading />}>
     <LazyCounterPage {...props} />
@@ -21,6 +22,7 @@ const LazyCustomersPage = React.lazy(() =>
   import(/* webpackChunkName: "CustomersPage" */ './containers/CustomersPage')
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomersPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<Loading />}>
     <LazyCustomersPage {...props} />
@@ -31,6 +33,7 @@ const LazyCustomerPage = React.lazy(() =>
   import(/* webpackChunkName: "CustomerPage" */ './containers/CustomerPage')
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomerPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<Loading />}>
     <LazyCustomerPage {...props} />
