@@ -7,8 +7,8 @@ import App from './containers/App';
 import HomePage from './containers/HomePage';
 
 // Lazily load routes and code split with webpack
-const LazyCounterPage = React.lazy(() =>
-  import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
+const LazyCounterPage = React.lazy(
+  () => import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
 );
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,8 +18,9 @@ const CounterPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 
-const LazyCustomersPage = React.lazy(() =>
-  import(/* webpackChunkName: "CustomersPage" */ './containers/CustomersPage')
+const LazyCustomersPage = React.lazy(
+  () =>
+    import(/* webpackChunkName: "CustomersPage" */ './containers/CustomersPage')
 );
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,8 +30,9 @@ const CustomersPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 
-const LazyCustomerPage = React.lazy(() =>
-  import(/* webpackChunkName: "CustomerPage" */ './containers/CustomerPage')
+const LazyCustomerPage = React.lazy(
+  () =>
+    import(/* webpackChunkName: "CustomerPage" */ './containers/CustomerPage')
 );
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -20,10 +20,11 @@ type Props = {
   icon: React.ReactNode;
   text: string;
   to: string;
+  // eslint-disable-next-line react/require-default-props
   exact?: boolean;
 };
 
-export default function LinkItem({ icon, text, to, exact }: Props) {
+export default function LinkItem({ icon, text, to, exact = false }: Props) {
   const classes = useStyles();
   return (
     <ListItem
