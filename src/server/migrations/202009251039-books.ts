@@ -9,6 +9,7 @@ exports.up = (knex: Knex) =>
     table.string('type', 30).notNullable(); // CA, Manual, Other
     table.integer('schoolYear').nullable();
     table.string('code_pe', 6).nullable();
+    table.timestamps(false, false);
   });
 
 exports.down = (knex: Knex) => knex.schema.dropTable('books');
