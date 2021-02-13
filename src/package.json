@@ -1,0 +1,22 @@
+{
+  "name": "lpe-order-management",
+  "productName": "Gestão de Encomendas",
+  "version": "0.0.3",
+  "description": "Gestão de Encomendas para a Livraria e Papelaria Espaço",
+  "main": "./main.prod.js",
+  "author": {
+    "name": "Diogo Correia",
+    "email": "me@diogotc.com",
+    "url": "https://diogotc.com"
+  },
+  "scripts": {
+    "electron-rebuild": "node -r ../.erb/scripts/BabelRegister.js ../.erb/scripts/ElectronRebuild.js",
+    "postinstall": "yarn electron-rebuild"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "knex": "^0.21.17",
+    "sqlite3": "5.0.0",
+    "typeface-roboto": "^1.1.13"
+  }
+}
