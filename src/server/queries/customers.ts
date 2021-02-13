@@ -20,7 +20,9 @@ ipcMain.on(
   'db-customers-insert',
   async (event: IpcMainEvent, args: CustomerInsertArgs) => {
     try {
-      const result = await db.insert(args).into('customers');
+      const result = await db
+        .insert({ created_at: db.fn.now(), updated_at: db.fn.now(), ...args })
+        .into('customers');
       event.reply('db-result-customers-insert', result);
     } catch (e) {
       event.reply('db-result-customers-insert', false);

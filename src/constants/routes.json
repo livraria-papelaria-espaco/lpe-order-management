@@ -1,6 +1,5 @@
 {
   "HOME": "/",
-  "COUNTER": "/counter",
   "CUSTOMERS": "/customers",
   "CUSTOMER": "/customers/:id",
   "ORDERS": "/orders"
