@@ -26,9 +26,9 @@ export default function CustomerAddDialog({ open, handleClose }: Props) {
     evt: React.ChangeEvent<HTMLInputElement>
   ) => fn(evt.target.value);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
     if (name) {
-      ipcRenderer.send('db-customers-insert', { name, phone, email });
       ipcRenderer.once('db-result-customers-insert', (_, args) => {
         if (args) {
           handleClose();
@@ -44,6 +44,7 @@ export default function CustomerAddDialog({ open, handleClose }: Props) {
             { variant: 'error' }
           );
       });
+      ipcRenderer.send('db-customers-insert', { name, phone, email });
     }
   };
 

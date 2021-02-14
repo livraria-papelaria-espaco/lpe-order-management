@@ -16,9 +16,9 @@ type BookInsertArgs = {
   publisher: string;
   provider: string;
   type: 'manual' | 'ca' | 'other';
-  schoolYear: number;
+  schoolYear: string;
   codePe: string;
-  stock: number;
+  stock: string;
 };
 
 ipcMain.on(
@@ -26,7 +26,13 @@ ipcMain.on(
   async (event: IpcMainEvent, args: BookInsertArgs) => {
     try {
       const result = await db
-        .insert({ created_at: db.fn.now(), updated_at: db.fn.now(), ...args })
+        .insert({
+          created_at: db.fn.now(),
+          updated_at: db.fn.now(),
+          ...args,
+          stock: parseInt(args.stock, 10) || 0,
+          schoolYear: parseInt(args.schoolYear, 10) || null,
+        })
         .into('books');
       event.reply('db-result-books-insert', result);
     } catch (e) {

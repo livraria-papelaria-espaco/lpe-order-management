@@ -49,18 +49,9 @@ export default function BookAddDialog({ open, handleClose }: Props) {
     evt: React.ChangeEvent<HTMLInputElement>
   ) => fn(evt.target.value);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
     if (name) {
-      ipcRenderer.send('db-books-insert', {
-        isbn,
-        name,
-        publisher,
-        provider,
-        type,
-        schoolYear,
-        codePe,
-        stock,
-      });
       ipcRenderer.once('db-result-books-insert', (_, args) => {
         if (args) {
           handleClose();
@@ -80,6 +71,16 @@ export default function BookAddDialog({ open, handleClose }: Props) {
             `Erro ao adicionar o Livro. ISBN já existe na base de dados.`,
             { variant: 'error' }
           );
+      });
+      ipcRenderer.send('db-books-insert', {
+        isbn,
+        name,
+        publisher,
+        provider,
+        type,
+        schoolYear,
+        codePe,
+        stock,
       });
     }
   };
