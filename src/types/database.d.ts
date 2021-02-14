@@ -10,3 +10,16 @@ export type Customer = {
 export type CustomerPage = {
   customer: Customer;
 };
+
+export type Book = {
+  isbn: string;
+  name: string;
+  publisher: string;
+  provider: string;
+  type: 'manual' | 'ca' | 'other';
+  schoolYear: number;
+  codePe: string;
+  stock: number;
+  created_at: Date;
+  updated_at: Date;
+};

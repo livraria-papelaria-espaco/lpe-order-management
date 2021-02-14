@@ -12,19 +12,17 @@ import SeeIcon from '@material-ui/icons/VisibilityRounded';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import routes from '../../constants/routes';
-import { Customer } from '../../types/database';
+import { Book } from '../../types/database';
 
 const { ipcRenderer } = require('electron');
 
-export default function CustomerList() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+export default function BookList() {
+  const [books, setBooks] = useState<Book[]>([]);
   const history = useHistory();
 
   const refreshView = useCallback(() => {
-    ipcRenderer.once('db-result-customers-find', (_, args) =>
-      setCustomers([...args])
-    );
-    ipcRenderer.send('db-customers-find');
+    ipcRenderer.once('db-result-books-find', (_, args) => setBooks([...args]));
+    ipcRenderer.send('db-books-find');
   }, []);
   const handleEventRefresh = useCallback(
     (_, sucess) => sucess && refreshView(),
@@ -34,44 +32,43 @@ export default function CustomerList() {
   useEffect(() => {
     refreshView();
 
-    ipcRenderer.on('db-result-customers-insert', handleEventRefresh);
+    ipcRenderer.on('db-result-books-insert', handleEventRefresh);
 
     return () => {
-      ipcRenderer.removeListener(
-        'db-result-customers-insert',
-        handleEventRefresh
-      );
+      ipcRenderer.removeListener('db-result-books-insert', handleEventRefresh);
     };
   }, [handleEventRefresh, refreshView]);
 
   return (
     <div>
       <TableContainer component={Paper}>
-        <Table aria-label="customer table">
+        <Table aria-label="book table">
           <TableHead>
             <TableRow>
+              <TableCell>ISBN</TableCell>
               <TableCell>Nome</TableCell>
-              <TableCell>Telemóvel</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>Editora</TableCell>
+              <TableCell>Tipo</TableCell>
+              <TableCell>Disponível para Venda</TableCell>
               <TableCell padding="checkbox" align="right" />
             </TableRow>
           </TableHead>
           <TableBody>
-            {customers.map((customer: Customer) => (
+            {books.map((book: Book) => (
               <TableRow
                 hover
                 onClick={() => {
-                  history.push(
-                    routes.CUSTOMER.replace(':id', `${customer.id}`)
-                  );
+                  history.push(routes.BOOK.replace(':id', `${book.isbn}`));
                 }}
-                key={customer.id}
+                key={book.isbn}
               >
                 <TableCell component="th" scope="row">
-                  {customer.name}
+                  {book.isbn}
                 </TableCell>
-                <TableCell>{customer.phone}</TableCell>
-                <TableCell>{customer.email}</TableCell>
+                <TableCell>{book.name}</TableCell>
+                <TableCell>{book.publisher}</TableCell>
+                <TableCell>{book.type}</TableCell>
+                <TableCell>{book.stock}</TableCell>
                 <TableCell padding="checkbox" align="right">
                   <Button startIcon={<SeeIcon />} color="primary">
                     Ver&nbsp;&amp;&nbsp;Editar

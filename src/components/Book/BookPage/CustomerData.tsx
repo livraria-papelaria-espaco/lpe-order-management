@@ -10,7 +10,7 @@ import EditIcon from '@material-ui/icons/EditRounded';
 import SaveIcon from '@material-ui/icons/SaveRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import { Customer } from '../../types/database';
+import { Customer } from '../../../types/database';
 import CustomerDelete from './CustomerDelete';
 
 const { ipcRenderer } = require('electron');

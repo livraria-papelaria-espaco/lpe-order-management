@@ -3,7 +3,7 @@ import BackIcon from '@material-ui/icons/ArrowBackRounded';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
-import CustomerData from '../components/CustomerPage/CustomerData';
+import CustomerData from '../components/Customer/CustomerPage/CustomerData';
 import Loading from '../components/Loading';
 import { CustomerPage } from '../types/database';
 

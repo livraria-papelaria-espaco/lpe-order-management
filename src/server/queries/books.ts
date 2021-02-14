@@ -1,9 +1,10 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import db from '../database';
+import getBookMetadata from '../../utils/bookMetadata';
 
 ipcMain.on('db-books-find', async (event: IpcMainEvent) => {
   const result = await db
-    .select('isbn', 'name', 'publisher', 'type')
+    .select('isbn', 'name', 'publisher', 'type', 'stock')
     .orderBy('updated_at', 'desc')
     .from('books');
   event.reply('db-result-books-find', result);
@@ -16,7 +17,8 @@ type BookInsertArgs = {
   provider: string;
   type: 'manual' | 'ca' | 'other';
   schoolYear: number;
-  code_pe: string;
+  codePe: string;
+  stock: number;
 };
 
 ipcMain.on(
@@ -43,7 +45,8 @@ ipcMain.on('db-book-find-one', async (event: IpcMainEvent, isbn: string) => {
         'provider',
         'type',
         'schoolYear',
-        'code_pe',
+        'codePe',
+        'stock',
         'created_at',
         'updated_at'
       )
@@ -65,7 +68,8 @@ ipcMain.on(
         provider: args.provider,
         type: args.type,
         schoolYear: args.schoolYear,
-        code_pe: args.code_pe,
+        codePe: args.codePe,
+        stock: args.stock,
         updated_at: db.fn.now(),
       });
       event.reply('db-result-book-update', true);
@@ -83,3 +87,17 @@ ipcMain.on('db-book-delete', async (event: IpcMainEvent, isbn: string) => {
     event.reply('db-result-book-delete', false);
   }
 });
+
+ipcMain.on(
+  'utils-book-get-metadata',
+  async (event: IpcMainEvent, isbn: string) => {
+    try {
+      event.reply(
+        'utils-result-book-get-metadata',
+        await getBookMetadata(isbn)
+      );
+    } catch (e) {
+      event.reply('utils-result-book-get-metadata', false);
+    }
+  }
+);

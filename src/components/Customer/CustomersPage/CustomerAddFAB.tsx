@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import { Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import CustomerAddDialog from '../Customer/CustomerAddDialog';
+import CustomerAddDialog from '../CustomerAddDialog';
 
 const useStyles = makeStyles((theme) => ({
   fab: {

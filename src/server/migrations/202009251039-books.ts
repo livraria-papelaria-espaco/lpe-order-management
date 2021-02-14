@@ -8,7 +8,8 @@ exports.up = (knex: Knex) =>
     table.string('provider', 30);
     table.string('type', 30).notNullable(); // CA, Manual, Other
     table.integer('schoolYear').nullable();
-    table.string('code_pe', 6).nullable();
+    table.string('codePe', 6).nullable();
+    table.integer('stock').unsigned();
     table.timestamps(false, false);
   });
 

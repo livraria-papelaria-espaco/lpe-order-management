@@ -8,7 +8,7 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 import React from 'react';
-import { DRAWER_WIDTH } from '../../constants/drawer.json';
+import drawer from '../../constants/drawer';
 import { mainListItems, secondaryListItems } from './listItems';
 import VersionIndicator from './VersionIndicator';
 
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: DRAWER_WIDTH,
+    width: drawer.DRAWER_WIDTH,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,

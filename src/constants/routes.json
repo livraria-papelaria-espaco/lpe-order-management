@@ -1,6 +1,0 @@
-{
-  "HOME": "/",
-  "CUSTOMERS": "/customers",
-  "CUSTOMER": "/customers/:id",
-  "ORDERS": "/orders"
-}

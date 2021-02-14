@@ -5,13 +5,13 @@ import {
   ListSubheader,
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import BarChartIcon from '@material-ui/icons/BarChart';
+import BookIcon from '@material-ui/icons/BookRounded';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LayersIcon from '@material-ui/icons/Layers';
-import PeopleIcon from '@material-ui/icons/People';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import PeopleIcon from '@material-ui/icons/PeopleRounded';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCartRounded';
 import React from 'react';
-import routes from '../../constants/routes.json';
+import routes from '../../constants/routes';
 import LinkItem from './LinkItem';
 
 export const mainListItems = (
@@ -28,12 +28,7 @@ export const mainListItems = (
       to={routes.ORDERS}
     />
     <LinkItem icon={<PeopleIcon />} text="Clientes" to={routes.CUSTOMERS} />
-    <ListItem button>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItem>
+    <LinkItem icon={<BookIcon />} text="Livros" to={routes.BOOKS} />
     <ListItem button>
       <ListItemIcon>
         <LayersIcon />
