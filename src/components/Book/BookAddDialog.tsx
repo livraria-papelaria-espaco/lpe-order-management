@@ -201,7 +201,7 @@ export default function BookAddDialog({ open, handleClose }: Props) {
             value={stock}
             onChange={handleChange(setStock)}
             margin="dense"
-            label="Stock"
+            label="Stock Disponível para Venda"
             type="text"
             fullWidth
           />

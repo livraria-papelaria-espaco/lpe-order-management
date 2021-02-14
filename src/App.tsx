@@ -8,6 +8,7 @@ import CustomersPage from './pages/CustomersPage';
 import BooksPage from './pages/BooksPage';
 import HomePage from './pages/HomePage';
 import Root from './pages/Root';
+import BookPage from './pages/BookPage';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Switch>
             <Route path={routes.CUSTOMER} component={CustomerPage} />
             <Route path={routes.CUSTOMERS} component={CustomersPage} />
+            <Route path={routes.BOOK} component={BookPage} />
             <Route path={routes.BOOKS} component={BooksPage} />
             <Route path={routes.HOME} component={HomePage} />
           </Switch>

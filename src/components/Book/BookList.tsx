@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   Paper,
   Table,
   TableBody,
@@ -13,6 +14,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import routes from '../../constants/routes';
 import { Book } from '../../types/database';
+import { bookTypes } from '../../constants/enums';
 
 const { ipcRenderer } = require('electron');
 
@@ -67,7 +69,12 @@ export default function BookList() {
                 </TableCell>
                 <TableCell>{book.name}</TableCell>
                 <TableCell>{book.publisher}</TableCell>
-                <TableCell>{book.type}</TableCell>
+                <TableCell>
+                  <Chip
+                    style={{ backgroundColor: bookTypes[book.type].color }}
+                    label={bookTypes[book.type].displayName}
+                  />
+                </TableCell>
                 <TableCell>{book.stock}</TableCell>
                 <TableCell padding="checkbox" align="right">
                   <Button startIcon={<SeeIcon />} color="primary">

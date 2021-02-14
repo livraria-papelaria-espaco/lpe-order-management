@@ -23,3 +23,7 @@ export type Book = {
   created_at: Date;
   updated_at: Date;
 };
+
+export type BookPage = {
+  book: Book;
+};

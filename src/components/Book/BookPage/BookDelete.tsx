@@ -15,10 +15,10 @@ import { useHistory } from 'react-router';
 const { ipcRenderer } = require('electron');
 
 type Props = {
-  id: number;
+  id: string;
 };
 
-export default function CustomerDelete({ id }: Props) {
+export default function BookDelete({ id }: Props) {
   const [open, setOpen] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
@@ -32,20 +32,20 @@ export default function CustomerDelete({ id }: Props) {
   };
 
   const handleDelete = () => {
-    ipcRenderer.once('db-result-customer-delete', (_, success) => {
+    ipcRenderer.once('db-result-book-delete', (_, success) => {
       if (success) {
-        enqueueSnackbar('Cliente eliminado com sucesso', {
+        enqueueSnackbar('Livro eliminado com sucesso', {
           variant: 'success',
         });
         history.goBack();
         return;
       }
       enqueueSnackbar(
-        'Erro ao eliminar clientes: um cliente não pode ser eliminado se tiver encomendas associadas!',
+        'Erro ao eliminar livro: um livro não pode ser eliminado se tiver encomendas associadas!',
         { variant: 'error' }
       );
     });
-    ipcRenderer.send('db-customer-delete', id);
+    ipcRenderer.send('db-book-delete', id);
   };
 
   return (
@@ -56,16 +56,16 @@ export default function CustomerDelete({ id }: Props) {
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="alert-dialog-delete-customer-title"
-        aria-describedby="alert-dialog-delete-customer-description"
+        aria-labelledby="alert-dialog-delete-book-title"
+        aria-describedby="alert-dialog-delete-book-description"
       >
-        <DialogTitle id="alert-dialog-delete-customer-title">
-          Tem a certeza que quer eliminar este cliente?
+        <DialogTitle id="alert-dialog-delete-book-title">
+          Tem a certeza que quer eliminar este livro?
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-delete-customer-description">
-            Esta ação não pode ser revertida. Um cliente não pode ser eliminado
-            se tiver encomendas associadas.
+          <DialogContentText id="alert-dialog-delete-book-description">
+            Esta ação não pode ser revertida. Um livro não pode ser eliminado se
+            tiver encomendas associadas.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

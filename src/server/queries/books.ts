@@ -68,16 +68,18 @@ ipcMain.on(
   'db-book-update',
   async (event: IpcMainEvent, args: BookInsertArgs) => {
     try {
-      await db('books').where('isbn', args.isbn).update({
-        name: args.name,
-        publisher: args.publisher,
-        provider: args.provider,
-        type: args.type,
-        schoolYear: args.schoolYear,
-        codePe: args.codePe,
-        stock: args.stock,
-        updated_at: db.fn.now(),
-      });
+      await db('books')
+        .where('isbn', args.isbn)
+        .update({
+          name: args.name,
+          publisher: args.publisher,
+          provider: args.provider,
+          type: args.type,
+          codePe: args.codePe,
+          stock: parseInt(args.stock, 10) || 0,
+          schoolYear: parseInt(args.schoolYear, 10) || null,
+          updated_at: db.fn.now(),
+        });
       event.reply('db-result-book-update', true);
     } catch (e) {
       event.reply('db-result-book-update', false);
