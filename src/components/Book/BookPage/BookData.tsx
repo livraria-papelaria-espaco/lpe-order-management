@@ -1,6 +1,7 @@
 import {
   Grid,
   IconButton,
+  LinearProgress,
   makeStyles,
   MenuItem,
   Paper,
@@ -9,6 +10,7 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/EditRounded';
 import SaveIcon from '@material-ui/icons/SaveRounded';
+import DownloadIcon from '@material-ui/icons/CloudDownloadRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { Book } from '../../../types/database';
@@ -37,6 +39,7 @@ type Props = {
 export default function BookData({ book }: Props) {
   const classes = useStyles();
   const [edit, setEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState(book?.name);
   const [publisher, setPublisher] = useState(book?.publisher);
   const [provider, setProvider] = useState(book?.provider);
@@ -52,21 +55,7 @@ export default function BookData({ book }: Props) {
     evt: React.ChangeEvent<HTMLInputElement>
   ) => fn(evt.target.value);
 
-  const toggleEdit = () => {
-    if (!edit) {
-      setEdit(true);
-      return;
-    }
-    ipcRenderer.send('db-book-update', {
-      isbn: book.isbn,
-      name,
-      publisher,
-      provider,
-      type,
-      schoolYear,
-      codePe,
-      stock,
-    });
+  const saveChanges = (data: Book) => {
     ipcRenderer.once('db-result-book-update', (_, success) => {
       if (success) {
         enqueueSnackbar('Alterações efetuadas com sucesso!', {
@@ -85,11 +74,61 @@ export default function BookData({ book }: Props) {
       setCodePe(book?.codePe);
       setStock(book?.stock.toString(10) ?? '');
     });
+    ipcRenderer.send('db-book-update', data);
+  };
+
+  const toggleEdit = () => {
+    if (!edit) {
+      setEdit(true);
+      return;
+    }
+    saveChanges({
+      isbn: book.isbn,
+      name,
+      publisher,
+      provider,
+      type,
+      schoolYear,
+      codePe,
+      stock,
+    });
     setEdit(false);
+  };
+
+  const fetchMetadata = () => {
+    setLoading(true);
+    ipcRenderer.send('utils-book-get-metadata', book.isbn);
+    ipcRenderer.once('utils-result-book-get-metadata', (_, result) => {
+      setLoading(false);
+      if (!result) {
+        enqueueSnackbar(
+          `Não foi possível preencher automaticamente informação para este livro.`,
+          { variant: 'error' }
+        );
+        return;
+      }
+      setName(result.name ?? name);
+      setPublisher(result.publisher ?? publisher);
+      setProvider(result.provider ?? provider);
+      setType(result.type ?? type);
+      setSchoolYear(result.schoolYear ?? schoolYear);
+      setCodePe(result.codePe ?? codePe);
+      saveChanges({
+        isbn: book.isbn,
+        name: result.name ?? name,
+        publisher: result.publisher ?? publisher,
+        provider: result.provider ?? provider,
+        type: result.type ?? type,
+        schoolYear: result.schoolYear ?? schoolYear,
+        codePe: result.codePe ?? codePe,
+        stock,
+      });
+    });
   };
 
   return (
     <Paper className={classes.paper}>
+      {loading && <LinearProgress />}
       <div className={classes.toolbar}>
         <div className={classes.title}>
           <Typography variant="h4">{book.isbn || 'Livro'}</Typography>
@@ -102,6 +141,9 @@ export default function BookData({ book }: Props) {
           </Typography>
         </div>
         <div>
+          <IconButton onClick={fetchMetadata}>
+            <DownloadIcon />
+          </IconButton>
           <IconButton onClick={toggleEdit} color="secondary">
             {edit ? <SaveIcon /> : <EditIcon />}
           </IconButton>
