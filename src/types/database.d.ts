@@ -24,6 +24,10 @@ export type Book = {
   updated_at: Date;
 };
 
+interface BookWithQuantity extends Book {
+  quantity: number;
+}
+
 export type BookPage = {
   book: Book;
 };

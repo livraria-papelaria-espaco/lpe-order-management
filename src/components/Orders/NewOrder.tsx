@@ -1,10 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import ImportFromSchool from './imports/ImportFromSchool';
-import { Book } from '../../types/database';
-
-interface BookWithQuantity extends Book {
-  quantity: number;
-}
+import { Book, BookWithQuantity } from '../../types/database';
+import BookList from './create/BookList';
 
 export default function NewOrder() {
   const [books, setBooks] = useState<BookWithQuantity[]>([]);
@@ -25,10 +22,18 @@ export default function NewOrder() {
     [books]
   );
 
+  const updateQuantity = useCallback(
+    (isbn: string, quantity: number) =>
+      setBooks(
+        books.map((book) => (book.isbn === isbn ? { ...book, quantity } : book))
+      ),
+    [books]
+  );
+
   return (
     <div>
       <ImportFromSchool addBooks={addBooks} />
-      <p>{JSON.stringify(books)}</p>
+      <BookList books={books} updateQuantity={updateQuantity} />
     </div>
   );
 }
