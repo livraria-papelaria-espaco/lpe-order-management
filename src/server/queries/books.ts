@@ -29,7 +29,12 @@ ipcMain.on(
         .insert({
           created_at: db.fn.now(),
           updated_at: db.fn.now(),
-          ...args,
+          isbn: args.isbn,
+          name: args.name || '',
+          publisher: args.publisher || '',
+          provider: args.provider || '',
+          type: args.type || '',
+          codePe: args.codePe || '',
           stock: parseInt(args.stock, 10) || 0,
           schoolYear: parseInt(args.schoolYear, 10) || null,
         })

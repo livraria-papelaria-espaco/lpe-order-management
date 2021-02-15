@@ -9,6 +9,7 @@ import BooksPage from './pages/BooksPage';
 import HomePage from './pages/HomePage';
 import Root from './pages/Root';
 import BookPage from './pages/BookPage';
+import OrdersPage from './pages/OrdersPage';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
             <Route path={routes.CUSTOMERS} component={CustomersPage} />
             <Route path={routes.BOOK} component={BookPage} />
             <Route path={routes.BOOKS} component={BooksPage} />
+            <Route path={routes.ORDERS} component={OrdersPage} />
             <Route path={routes.HOME} component={HomePage} />
           </Switch>
         </Root>

@@ -57,6 +57,8 @@ const getBookType = (response: string, title: string) => {
       "student's file",
       "cahier d'exercices",
       'cuaderno de ejercicios',
+      'caderno prático',
+      'caderno de autoavaliação',
     ].some((v) => text.toLowerCase().trim().includes(v))
   );
   const type = typeIndex === -1 ? 'manual' : 'ca';
@@ -70,14 +72,9 @@ const getBookType = (response: string, title: string) => {
   return { type, schoolYear };
 };
 
-const getMetadata = async (isbn: string) => {
+export const getMetadataByURL = async (url: string) => {
   try {
-    const response = await axios.get(
-      `https://www.wook.pt/pesquisa/${encodeURIComponent(isbn).replace(
-        ' ',
-        '+'
-      )}`
-    );
+    const response = await axios.get(url);
 
     const dataString = WOOK_REGEX.exec(response.data)?.[1];
     if (!dataString) return false;
@@ -101,5 +98,10 @@ const getMetadata = async (isbn: string) => {
     return false;
   }
 };
+
+export const getMetadata = async (isbn: string) =>
+  getMetadataByURL(
+    `https://www.wook.pt/pesquisa/${encodeURIComponent(isbn).replace(' ', '+')}`
+  );
 
 export default getMetadata;
