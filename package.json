@@ -88,8 +88,7 @@
     "publish": {
       "provider": "github",
       "owner": "livraria-papelaria-espaco",
-      "repo": "lpe-order-management",
-      "private": true
+      "repo": "lpe-order-management"
     }
   },
   "repository": {
