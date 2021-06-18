@@ -56,20 +56,23 @@ export default function CustomerData({ customer }: Props) {
       phone,
       email,
     });
-    ipcRenderer.once('db-result-customer-update', (_, success) => {
-      if (success) {
-        enqueueSnackbar('Alterações efetuadas com sucesso!', {
-          variant: 'success',
+    ipcRenderer.once(
+      'db-result-customer-update',
+      (_: never, success: boolean) => {
+        if (success) {
+          enqueueSnackbar('Alterações efetuadas com sucesso!', {
+            variant: 'success',
+          });
+          return;
+        }
+        enqueueSnackbar('Já existe um cliente com esse telemóvel e/ou email!', {
+          variant: 'error',
         });
-        return;
+        setName(customer?.name);
+        setPhone(customer?.phone);
+        setEmail(customer?.email);
       }
-      enqueueSnackbar('Já existe um cliente com esse telemóvel e/ou email!', {
-        variant: 'error',
-      });
-      setName(customer?.name);
-      setPhone(customer?.phone);
-      setEmail(customer?.email);
-    });
+    );
     setEdit(false);
   };
 
@@ -79,9 +82,9 @@ export default function CustomerData({ customer }: Props) {
         <div className={classes.title}>
           <Typography variant="h4">{name || 'Cliente'}</Typography>
           <Typography variant="caption" color="textSecondary">
-            {`Adicionado em ${customer.created_at.toLocaleString(
+            {`Adicionado em ${customer.created_at?.toLocaleString(
               'pt-PT'
-            )} | Última atualização em ${customer.updated_at.toLocaleString(
+            )} | Última atualização em ${customer.updated_at?.toLocaleString(
               'pt-PT'
             )}`}
           </Typography>

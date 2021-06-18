@@ -3,13 +3,15 @@ export type Customer = {
   name: string;
   phone: string;
   email: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
 };
 
 export type CustomerPage = {
   customer: Customer;
 };
+
+export type CustomerQueryResult = CustomerPage | false;
 
 export type Book = {
   isbn: string;
@@ -20,8 +22,8 @@ export type Book = {
   schoolYear: number;
   codePe: string;
   stock: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
 };
 
 interface BookWithQuantity extends Book {
@@ -31,3 +33,5 @@ interface BookWithQuantity extends Book {
 export type BookPage = {
   book: Book;
 };
+
+export type BookQueryResult = Book | false;

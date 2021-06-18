@@ -13,6 +13,7 @@ import {
 import AutoFillIcon from '@material-ui/icons/SearchRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
+import { BookQueryResult } from '../../types/database';
 
 const { ipcRenderer } = require('electron');
 
@@ -52,26 +53,29 @@ export default function BookAddDialog({ open, handleClose }: Props) {
   const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     if (name) {
-      ipcRenderer.once('db-result-books-insert', (_, args) => {
-        if (args) {
-          handleClose();
-          enqueueSnackbar(`Livro adicionado com sucesso!`, {
-            variant: 'success',
-          });
-          setISBN('');
-          setName('');
-          setPublisher('');
-          setProvider('');
-          setType('other');
-          setSchoolYear('');
-          setCodePe('');
-          setStock('');
-        } else
-          enqueueSnackbar(
-            `Erro ao adicionar o Livro. ISBN já existe na base de dados.`,
-            { variant: 'error' }
-          );
-      });
+      ipcRenderer.once(
+        'db-result-books-insert',
+        (_: never, args: number | boolean) => {
+          if (args) {
+            handleClose();
+            enqueueSnackbar(`Livro adicionado com sucesso!`, {
+              variant: 'success',
+            });
+            setISBN('');
+            setName('');
+            setPublisher('');
+            setProvider('');
+            setType('other');
+            setSchoolYear('');
+            setCodePe('');
+            setStock('');
+          } else
+            enqueueSnackbar(
+              `Erro ao adicionar o Livro. ISBN já existe na base de dados.`,
+              { variant: 'error' }
+            );
+        }
+      );
       ipcRenderer.send('db-books-insert', {
         isbn,
         name,
@@ -89,23 +93,26 @@ export default function BookAddDialog({ open, handleClose }: Props) {
     if (isbn) {
       setLoading(true);
       ipcRenderer.send('utils-book-get-metadata', isbn);
-      ipcRenderer.once('utils-result-book-get-metadata', (_, result) => {
-        setLoading(false);
-        if (!result) {
-          enqueueSnackbar(
-            `Não foi possível preencher automaticamente informação para este livro.`,
-            { variant: 'error' }
-          );
-          return;
+      ipcRenderer.once(
+        'utils-result-book-get-metadata',
+        (_: never, result: BookQueryResult) => {
+          setLoading(false);
+          if (!result) {
+            enqueueSnackbar(
+              `Não foi possível preencher automaticamente informação para este livro.`,
+              { variant: 'error' }
+            );
+            return;
+          }
+          setISBN(result.isbn ?? isbn);
+          setName(result.name ?? name);
+          setPublisher(result.publisher ?? publisher);
+          setProvider(result.provider ?? provider);
+          setType(result.type ?? type);
+          setSchoolYear((result.schoolYear ?? schoolYear).toString());
+          setCodePe(result.codePe ?? codePe);
         }
-        setISBN(result.isbn ?? isbn);
-        setName(result.name ?? name);
-        setPublisher(result.publisher ?? publisher);
-        setProvider(result.provider ?? provider);
-        setType(result.type ?? type);
-        setSchoolYear(result.schoolYear ?? schoolYear);
-        setCodePe(result.codePe ?? codePe);
-      });
+      );
     }
   };
 

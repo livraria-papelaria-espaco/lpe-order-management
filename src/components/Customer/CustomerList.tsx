@@ -21,7 +21,7 @@ export default function CustomerList() {
   const history = useHistory();
 
   const refreshView = useCallback(() => {
-    ipcRenderer.once('db-result-customers-find', (_, args) =>
+    ipcRenderer.once('db-result-customers-find', (_: never, args: Customer[]) =>
       setCustomers([...args])
     );
     ipcRenderer.send('db-customers-find');

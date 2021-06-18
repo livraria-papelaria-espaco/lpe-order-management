@@ -23,7 +23,9 @@ export default function BookList() {
   const history = useHistory();
 
   const refreshView = useCallback(() => {
-    ipcRenderer.once('db-result-books-find', (_, args) => setBooks([...args]));
+    ipcRenderer.once('db-result-books-find', (_: never, args: Book[]) =>
+      setBooks([...args])
+    );
     ipcRenderer.send('db-books-find');
   }, []);
   const handleEventRefresh = useCallback(

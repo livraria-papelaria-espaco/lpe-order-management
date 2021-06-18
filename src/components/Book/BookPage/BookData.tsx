@@ -13,7 +13,7 @@ import SaveIcon from '@material-ui/icons/SaveRounded';
 import DownloadIcon from '@material-ui/icons/CloudDownloadRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import { Book } from '../../../types/database';
+import { Book, BookQueryResult } from '../../../types/database';
 import BookDelete from './BookDelete';
 
 const { ipcRenderer } = require('electron');
@@ -43,7 +43,7 @@ export default function BookData({ book }: Props) {
   const [name, setName] = useState(book?.name);
   const [publisher, setPublisher] = useState(book?.publisher);
   const [provider, setProvider] = useState(book?.provider);
-  const [type, setType] = useState<string>(book?.type);
+  const [type, setType] = useState(book?.type);
   const [schoolYear, setSchoolYear] = useState(
     book?.schoolYear.toString(10) ?? ''
   );
@@ -51,12 +51,13 @@ export default function BookData({ book }: Props) {
   const [stock, setStock] = useState(book?.stock.toString(10) ?? '');
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleChange = (fn: React.Dispatch<React.SetStateAction<string>>) => (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleChange = (fn: React.Dispatch<React.SetStateAction<any>>) => (
     evt: React.ChangeEvent<HTMLInputElement>
   ) => fn(evt.target.value);
 
   const saveChanges = (data: Book) => {
-    ipcRenderer.once('db-result-book-update', (_, success) => {
+    ipcRenderer.once('db-result-book-update', (_: never, success: boolean) => {
       if (success) {
         enqueueSnackbar('Alterações efetuadas com sucesso!', {
           variant: 'success',
@@ -88,9 +89,9 @@ export default function BookData({ book }: Props) {
       publisher,
       provider,
       type,
-      schoolYear,
+      schoolYear: parseInt(schoolYear, 10),
       codePe,
-      stock,
+      stock: parseInt(stock, 10),
     });
     setEdit(false);
   };
@@ -98,32 +99,35 @@ export default function BookData({ book }: Props) {
   const fetchMetadata = () => {
     setLoading(true);
     ipcRenderer.send('utils-book-get-metadata', book.isbn);
-    ipcRenderer.once('utils-result-book-get-metadata', (_, result) => {
-      setLoading(false);
-      if (!result) {
-        enqueueSnackbar(
-          `Não foi possível preencher automaticamente informação para este livro.`,
-          { variant: 'error' }
-        );
-        return;
+    ipcRenderer.once(
+      'utils-result-book-get-metadata',
+      (_: never, result: BookQueryResult) => {
+        setLoading(false);
+        if (!result) {
+          enqueueSnackbar(
+            `Não foi possível preencher automaticamente informação para este livro.`,
+            { variant: 'error' }
+          );
+          return;
+        }
+        setName(result.name ?? name);
+        setPublisher(result.publisher ?? publisher);
+        setProvider(result.provider ?? provider);
+        setType(result.type ?? type);
+        setSchoolYear((result.schoolYear ?? schoolYear).toString());
+        setCodePe(result.codePe ?? codePe);
+        saveChanges({
+          isbn: book.isbn,
+          name: result.name ?? name,
+          publisher: result.publisher ?? publisher,
+          provider: result.provider ?? provider,
+          type: result.type ?? type,
+          schoolYear: result.schoolYear ?? schoolYear,
+          codePe: result.codePe ?? codePe,
+          stock: parseInt(stock, 10),
+        });
       }
-      setName(result.name ?? name);
-      setPublisher(result.publisher ?? publisher);
-      setProvider(result.provider ?? provider);
-      setType(result.type ?? type);
-      setSchoolYear(result.schoolYear ?? schoolYear);
-      setCodePe(result.codePe ?? codePe);
-      saveChanges({
-        isbn: book.isbn,
-        name: result.name ?? name,
-        publisher: result.publisher ?? publisher,
-        provider: result.provider ?? provider,
-        type: result.type ?? type,
-        schoolYear: result.schoolYear ?? schoolYear,
-        codePe: result.codePe ?? codePe,
-        stock,
-      });
-    });
+    );
   };
 
   return (
@@ -133,9 +137,9 @@ export default function BookData({ book }: Props) {
         <div className={classes.title}>
           <Typography variant="h4">{book.isbn || 'Livro'}</Typography>
           <Typography variant="caption" color="textSecondary">
-            {`Adicionado em ${book.created_at.toLocaleString(
+            {`Adicionado em ${book.created_at?.toLocaleString(
               'pt-PT'
-            )} | Última atualização em ${book.updated_at.toLocaleString(
+            )} | Última atualização em ${book.updated_at?.toLocaleString(
               'pt-PT'
             )}`}
           </Typography>

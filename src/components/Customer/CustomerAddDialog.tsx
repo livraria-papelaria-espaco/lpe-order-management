@@ -29,21 +29,24 @@ export default function CustomerAddDialog({ open, handleClose }: Props) {
   const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     if (name) {
-      ipcRenderer.once('db-result-customers-insert', (_, args) => {
-        if (args) {
-          handleClose();
-          enqueueSnackbar(`Cliente adicionado com sucesso!`, {
-            variant: 'success',
-          });
-          setName('');
-          setPhone('');
-          setEmail('');
-        } else
-          enqueueSnackbar(
-            `Erro ao adicionar o cliente. Telemóvel ou email já existem na base de dados.`,
-            { variant: 'error' }
-          );
-      });
+      ipcRenderer.once(
+        'db-result-customers-insert',
+        (_: never, args: number | boolean) => {
+          if (args) {
+            handleClose();
+            enqueueSnackbar(`Cliente adicionado com sucesso!`, {
+              variant: 'success',
+            });
+            setName('');
+            setPhone('');
+            setEmail('');
+          } else
+            enqueueSnackbar(
+              `Erro ao adicionar o cliente. Telemóvel ou email já existem na base de dados.`,
+              { variant: 'error' }
+            );
+        }
+      );
       ipcRenderer.send('db-customers-insert', { name, phone, email });
     }
   };

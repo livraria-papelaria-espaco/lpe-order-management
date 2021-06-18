@@ -32,19 +32,22 @@ export default function CustomerDelete({ id }: Props) {
   };
 
   const handleDelete = () => {
-    ipcRenderer.once('db-result-customer-delete', (_, success) => {
-      if (success) {
-        enqueueSnackbar('Cliente eliminado com sucesso', {
-          variant: 'success',
-        });
-        history.goBack();
-        return;
+    ipcRenderer.once(
+      'db-result-customer-delete',
+      (_: never, success: boolean) => {
+        if (success) {
+          enqueueSnackbar('Cliente eliminado com sucesso', {
+            variant: 'success',
+          });
+          history.goBack();
+          return;
+        }
+        enqueueSnackbar(
+          'Erro ao eliminar clientes: um cliente não pode ser eliminado se tiver encomendas associadas!',
+          { variant: 'error' }
+        );
       }
-      enqueueSnackbar(
-        'Erro ao eliminar clientes: um cliente não pode ser eliminado se tiver encomendas associadas!',
-        { variant: 'error' }
-      );
-    });
+    );
     ipcRenderer.send('db-customer-delete', id);
   };
 

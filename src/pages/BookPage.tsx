@@ -28,14 +28,17 @@ export default function BookOnePage() {
 
   useEffect(() => {
     ipcRenderer.send('db-book-find-one', id);
-    ipcRenderer.once('db-result-book-find-one', (_, response) => {
-      if (!response) {
-        enqueueSnackbar('Livro não encontrado', { variant: 'error' });
-        history.goBack();
-        return;
+    ipcRenderer.once(
+      'db-result-book-find-one',
+      (_: never, response: BookPage | false) => {
+        if (!response) {
+          enqueueSnackbar('Livro não encontrado', { variant: 'error' });
+          history.goBack();
+          return;
+        }
+        setData(response);
       }
-      setData(response);
-    });
+    );
   }, [enqueueSnackbar, history, id]);
 
   if (!data) return <Loading />;

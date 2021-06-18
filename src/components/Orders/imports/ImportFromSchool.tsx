@@ -45,25 +45,28 @@ export default function ImportFromSchool({ addBooks }: Props) {
   const openWook = () => {
     ipcRenderer.send('order-import-wook-open');
 
-    ipcRenderer.once('order-import-wook-result', (_, result: string[]) => {
-      if (result) {
-        setLoading(true);
-        ipcRenderer.send('order-import-wook-parse', result);
+    ipcRenderer.once(
+      'order-import-wook-result',
+      (_: never, result: string[]) => {
+        if (result) {
+          setLoading(true);
+          ipcRenderer.send('order-import-wook-parse', result);
 
-        ipcRenderer.once(
-          'order-import-wook-parse-result',
-          (__, parseResult: Book[]) => {
-            setLoading(false);
-            parseResult.forEach((book) =>
-              ipcRenderer.send('db-books-insert', book)
-            );
-            addBooks(parseResult);
-          }
-        );
-        return;
+          ipcRenderer.once(
+            'order-import-wook-parse-result',
+            (__: never, parseResult: Book[]) => {
+              setLoading(false);
+              parseResult.forEach((book) =>
+                ipcRenderer.send('db-books-insert', book)
+              );
+              addBooks(parseResult);
+            }
+          );
+          return;
+        }
+        enqueueSnackbar(`Operação cancelada.`, { variant: 'error' });
       }
-      enqueueSnackbar(`Operação cancelada.`, { variant: 'error' });
-    });
+    );
   };
 
   return (

@@ -32,7 +32,7 @@ export default function BookDelete({ id }: Props) {
   };
 
   const handleDelete = () => {
-    ipcRenderer.once('db-result-book-delete', (_, success) => {
+    ipcRenderer.once('db-result-book-delete', (_: never, success: boolean) => {
       if (success) {
         enqueueSnackbar('Livro eliminado com sucesso', {
           variant: 'success',

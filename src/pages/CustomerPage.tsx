@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import CustomerData from '../components/Customer/CustomerPage/CustomerData';
 import Loading from '../components/Loading';
-import { CustomerPage } from '../types/database';
+import { CustomerPage, CustomerQueryResult } from '../types/database';
 
 const { ipcRenderer } = require('electron');
 
@@ -28,14 +28,17 @@ export default function CustomersPage() {
 
   useEffect(() => {
     ipcRenderer.send('db-customer-find-one', id);
-    ipcRenderer.once('db-result-customer-find-one', (_, response) => {
-      if (!response) {
-        enqueueSnackbar('Cliente não encontrado', { variant: 'error' });
-        history.goBack();
-        return;
+    ipcRenderer.once(
+      'db-result-customer-find-one',
+      (_: never, response: CustomerQueryResult) => {
+        if (!response) {
+          enqueueSnackbar('Cliente não encontrado', { variant: 'error' });
+          history.goBack();
+          return;
+        }
+        setData(response);
       }
-      setData(response);
-    });
+    );
   }, [enqueueSnackbar, history, id]);
 
   if (!data) return <Loading />;
