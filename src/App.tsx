@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import './App.global.css';
 import { SnackbarProvider } from 'notistack';
 import routes from './constants/routes';
 import CustomerPage from './pages/CustomerPage';
