@@ -69,6 +69,8 @@ export default function ImportFromSchool({ addBooks }: Props) {
     );
   };
 
+  /* TODO Disable navigation and screen interaction while Wook is open */
+
   return (
     <div className={classes.root}>
       <Card className={classes.cardContent}>

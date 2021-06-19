@@ -18,6 +18,10 @@ ipcMain.on('order-import-wook-open', (event: IpcMainEvent) => {
     storages: ['cookies'],
   });
 
+  window.webContents.executeJavaScript(
+    `document.getElementById("cookieLawBar").style.display = "none"`
+  );
+
   const intervalId = setInterval(async () => {
     try {
       const data = await window.webContents.executeJavaScript(`

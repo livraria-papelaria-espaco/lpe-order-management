@@ -38,7 +38,7 @@ export default function BookItem({ book, updateQuantity }: Props) {
 
   const increase = () => updateQuantity(book.isbn, book.quantity + 1);
   const decrease = () =>
-    book.quantity > 1 && updateQuantity(book.isbn, book.quantity - 1);
+    book.quantity > 0 && updateQuantity(book.isbn, book.quantity - 1);
 
   return (
     <div className={classes.root}>

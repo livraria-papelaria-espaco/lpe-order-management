@@ -59,6 +59,9 @@ const getBookType = (response: string, title: string) => {
       'cuaderno de ejercicios',
       'caderno prático',
       'caderno de autoavaliação',
+      'livro de fichas',
+      'fichas de consolidação',
+      'livro de tarefas',
     ].some((v) => text.toLowerCase().trim().includes(v))
   );
   const type = typeIndex === -1 ? 'manual' : 'ca';

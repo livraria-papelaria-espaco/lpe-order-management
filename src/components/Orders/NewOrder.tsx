@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from 'react';
-import ImportFromSchool from './imports/ImportFromSchool';
+import React, { useCallback, useState, useMemo } from 'react';
+
 import { Book, BookWithQuantity } from '../../types/database';
 import BookList from './create/BookList';
+import CreateOrder from './create/CreateOrder';
+import ImportFromSchool from './imports/ImportFromSchool';
 
 export default function NewOrder() {
   const [books, setBooks] = useState<BookWithQuantity[]>([]);
@@ -30,10 +32,20 @@ export default function NewOrder() {
     [books]
   );
 
+  const bookRecord = useMemo(
+    () =>
+      books.reduce(
+        (acc, v) => (v.quantity === 0 ? acc : { ...acc, [v.isbn]: v.quantity }),
+        {}
+      ),
+    [books]
+  );
+
   return (
     <div>
       <ImportFromSchool addBooks={addBooks} />
       <BookList books={books} updateQuantity={updateQuantity} />
+      <CreateOrder books={bookRecord} />
     </div>
   );
 }
