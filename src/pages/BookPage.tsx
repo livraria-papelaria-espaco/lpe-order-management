@@ -1,19 +1,12 @@
-import { Button, makeStyles } from '@material-ui/core';
-import BackIcon from '@material-ui/icons/ArrowBackRounded';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
+import BackButton from '../components/BackButton';
 import BookData from '../components/Book/BookPage/BookData';
 import Loading from '../components/Loading';
 import { BookPage } from '../types/database';
 
 const { ipcRenderer } = require('electron');
-
-const useStyles = makeStyles((theme) => ({
-  backButton: {
-    marginBottom: theme.spacing(2),
-  },
-}));
 
 type ParamType = {
   id: string | undefined;
@@ -24,7 +17,6 @@ export default function BookOnePage() {
   const [data, setData] = useState<BookPage>();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
-  const classes = useStyles();
 
   useEffect(() => {
     ipcRenderer.send('db-book-find-one', id);
@@ -45,13 +37,7 @@ export default function BookOnePage() {
 
   return (
     <div>
-      <Button
-        onClick={() => history.goBack()}
-        startIcon={<BackIcon />}
-        className={classes.backButton}
-      >
-        VOLTAR
-      </Button>
+      <BackButton />
       <BookData book={data?.book} />
     </div>
   );
