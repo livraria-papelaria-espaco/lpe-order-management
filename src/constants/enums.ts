@@ -13,6 +13,25 @@ export const bookTypes = {
   },
 };
 
+export const orderStatus = {
+  pending: {
+    displayName: 'Em Processamento',
+    color: '#ed823b',
+  },
+  ready: {
+    displayName: 'Pronta (Cliente Não Notificado)',
+    color: '#f7ba2c',
+  },
+  notified: {
+    displayName: 'Cliente Notificado',
+    color: '#38cff4',
+  },
+  finished: {
+    displayName: 'Finalizada',
+    color: '#61ea3f',
+  },
+};
+
 export default {
   bookTypes,
 };

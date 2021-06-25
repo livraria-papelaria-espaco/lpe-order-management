@@ -11,7 +11,7 @@ exports.up = async (knex: Knex) => {
       .onDelete('RESTRICT')
       .onUpdate('CASCADE');
     table.timestamps(false, false);
-    table.string('status', 20); // 'pending', 'notified', 'sent'
+    table.string('status', 20); // 'pending', 'ready', 'notified', 'finished'
     table.text('notes');
   });
   await knex.schema.createTable('orders_books', (table) => {

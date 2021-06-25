@@ -1,11 +1,14 @@
-export type Customer = {
+export interface Timestamp {
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export interface Customer extends Timestamp {
   id: number;
   name: string;
   phone: string;
   email: string;
-  created_at?: Date;
-  updated_at?: Date;
-};
+}
 
 export type CustomerPage = {
   customer: Customer;
@@ -13,7 +16,7 @@ export type CustomerPage = {
 
 export type CustomerQueryResult = CustomerPage | false;
 
-export type Book = {
+export interface Book extends Timestamp {
   isbn: string;
   name: string;
   publisher: string;
@@ -22,9 +25,7 @@ export type Book = {
   schoolYear: number;
   codePe: string;
   stock: number;
-  created_at?: Date;
-  updated_at?: Date;
-};
+}
 
 interface BookWithQuantity extends Book {
   quantity: number;
@@ -35,3 +36,23 @@ export type BookPage = {
 };
 
 export type BookQueryResult = Book | false;
+
+export type OrderStatus = 'pending' | 'ready' | 'notified' | 'finished';
+
+export interface Order extends Timestamp {
+  id: number;
+  customer?: Customer;
+  status: OrderStatus;
+  notes: string;
+  books?: BookOrder[];
+  bookCount?: number;
+}
+
+export interface BookOrder {
+  id: number;
+  isbn: string;
+  targetQuantity: number;
+  orderedQuantity: number;
+  availableQuantity: number;
+  pickedupQuantity: number;
+}

@@ -66,3 +66,48 @@ ipcMain.on(
     }
   }
 );
+
+ipcMain.on('db-orders-find', async (event: IpcMainEvent) => {
+  const result = await db
+    .select(
+      'orders.id as orderId',
+      'status',
+      'notes',
+      'orders.created_at',
+      'orders.updated_at',
+      'customers.id as customerId',
+      'customers.name as customerName'
+    )
+    .orderBy('orders.created_at', 'desc')
+    .leftJoin('customers', 'orders.customer_id', 'customers.id')
+    .from('orders');
+
+  const orders = await Promise.all(
+    result.map(async (v) => ({
+      id: v.orderId,
+      customer: {
+        id: v.customerId,
+        name: v.customerName,
+      },
+      status: v.status,
+      created_at: v.created_at,
+      updated_at: v.updated_at,
+      notes: v.notes,
+      books: [
+        ...(await db
+          .select(
+            'id',
+            'isbn',
+            'target_quantity as targetQuantity',
+            'ordered_quantity as orderedQuantity',
+            'available_quantity as availableQuantity',
+            'pickedup_quantity as pickedupQuantity'
+          )
+          .where('order_id', v.orderId)
+          .from('orders_books')),
+      ],
+    }))
+  );
+
+  event.reply('db-result-orders-find', orders);
+});
