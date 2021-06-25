@@ -1,4 +1,5 @@
 import { ipcMain, IpcMainEvent } from 'electron';
+import log from 'electron-log';
 import db from '../database';
 
 ipcMain.on(
@@ -54,6 +55,7 @@ ipcMain.on(
 
       event.reply('db-create-order-result', id);
     } catch (e) {
+      log.error('Failed to create order', e);
       event.reply('db-create-order-result', false);
     }
   }

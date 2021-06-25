@@ -1,4 +1,5 @@
 import { ipcMain, IpcMainEvent } from 'electron';
+import log from 'electron-log';
 import db from '../database';
 import getBookMetadata from '../../utils/bookMetadata';
 
@@ -41,6 +42,7 @@ ipcMain.on(
         .into('books');
       event.reply('db-result-books-insert', result);
     } catch (e) {
+      log.error('Failed to insert book', e);
       event.reply('db-result-books-insert', false);
     }
   }
@@ -65,6 +67,7 @@ ipcMain.on('db-book-find-one', async (event: IpcMainEvent, isbn: string) => {
       .from('books');
     event.reply('db-result-book-find-one', { book: bookData[0] });
   } catch (e) {
+    log.error('Failed to find a book by ISBN', e);
     event.reply('db-result-book-find-one', false);
   }
 });
@@ -87,6 +90,7 @@ ipcMain.on(
         });
       event.reply('db-result-book-update', true);
     } catch (e) {
+      log.error('Failed to update book', e);
       event.reply('db-result-book-update', false);
     }
   }
@@ -97,6 +101,7 @@ ipcMain.on('db-book-delete', async (event: IpcMainEvent, isbn: string) => {
     await db('books').where('isbn', isbn).del();
     event.reply('db-result-book-delete', true);
   } catch (e) {
+    log.error('Failed to delete book', e);
     event.reply('db-result-book-delete', false);
   }
 });
@@ -110,6 +115,7 @@ ipcMain.on(
         await getBookMetadata(isbn)
       );
     } catch (e) {
+      log.error('Failed to get metadata of book by ISBN', e);
       event.reply('utils-result-book-get-metadata', false);
     }
   }

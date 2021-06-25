@@ -1,4 +1,5 @@
 import { ipcMain, IpcMainEvent } from 'electron';
+import log from 'electron-log';
 import db from '../database';
 
 ipcMain.on('db-customers-find', async (event: IpcMainEvent) => {
@@ -25,6 +26,7 @@ ipcMain.on(
         .into('customers');
       event.reply('db-result-customers-insert', result);
     } catch (e) {
+      log.error('Failed to insert customer', e);
       event.reply('db-result-customers-insert', false);
     }
   }
@@ -38,6 +40,7 @@ ipcMain.on('db-customer-find-one', async (event: IpcMainEvent, id: number) => {
       .from('customers');
     event.reply('db-result-customer-find-one', { customer: customerData[0] });
   } catch (e) {
+    log.error('Failed to find customer by ID', e);
     event.reply('db-result-customer-find-one', false);
   }
 });
@@ -54,6 +57,7 @@ ipcMain.on(
       });
       event.reply('db-result-customer-update', true);
     } catch (e) {
+      log.error('Failed to update customer', e);
       event.reply('db-result-customer-update', false);
     }
   }
@@ -64,6 +68,7 @@ ipcMain.on('db-customer-delete', async (event: IpcMainEvent, id: number) => {
     await db('customers').where('id', id).del();
     event.reply('db-result-customer-delete', true);
   } catch (e) {
+    log.error('Failed to delete customer', e);
     event.reply('db-result-customer-delete', false);
   }
 });
