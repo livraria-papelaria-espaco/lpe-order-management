@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import electron from 'electron';
+import log from 'electron-log';
 import fs from 'fs';
 import knex from 'knex';
 import path from 'path';
@@ -64,10 +65,12 @@ const db = knex(connection);
 db.migrate
   .latest({
     migrationSource: new WebpackMigrationSource(
-      require.context('./migrations', true, /\.ts$/)
+      require.context('./migrations', true, /\.ts$/),
+      (name: string) =>
+        process.env.NODE_ENV !== 'production' || name.startsWith('.')
     ),
   })
-  .then(() => console.log('Migrations done!'))
-  .catch(console.error);
+  .then(() => log.info('Migrations done!'))
+  .catch(log.error);
 
 export default db;
