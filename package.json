@@ -1,7 +1,7 @@
 {
   "name": "lpe-order-management",
   "productName": "Gestão de Encomendas",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Gestão de Encomendas para a Livraria e Papelaria Espaço",
   "scripts": {
     "build": "concurrently \"yarn build:main\" \"yarn build:renderer\"",
