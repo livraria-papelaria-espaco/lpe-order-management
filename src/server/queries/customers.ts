@@ -19,10 +19,16 @@ type CustomerInsertArgs = {
 
 ipcMain.on(
   'db-customers-insert',
-  async (event: IpcMainEvent, args: CustomerInsertArgs) => {
+  async (event: IpcMainEvent, { name, phone, email }: CustomerInsertArgs) => {
     try {
       const result = await db
-        .insert({ created_at: db.fn.now(), updated_at: db.fn.now(), ...args })
+        .insert({
+          created_at: db.fn.now(),
+          updated_at: db.fn.now(),
+          name: name || null,
+          phone: phone || null,
+          email: email || null,
+        })
         .into('customers');
       event.reply('db-result-customers-insert', result);
     } catch (e) {
@@ -49,12 +55,14 @@ ipcMain.on(
   'db-customer-update',
   async (event: IpcMainEvent, args: CustomerInsertArgs) => {
     try {
-      await db('customers').where('id', args.id).update({
-        name: args.name,
-        phone: args.phone,
-        email: args.email,
-        updated_at: db.fn.now(),
-      });
+      await db('customers')
+        .where('id', args.id)
+        .update({
+          name: args.name || null,
+          phone: args.phone || null,
+          email: args.email || null,
+          updated_at: db.fn.now(),
+        });
       event.reply('db-result-customer-update', true);
     } catch (e) {
       log.error('Failed to update customer', e);
