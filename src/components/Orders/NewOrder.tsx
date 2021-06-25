@@ -5,10 +5,12 @@ import BookList from './create/BookList';
 import CreateOrder from './create/CreateOrder';
 import CustomerSelector from './create/CustomerSelector';
 import ImportFromSchool from './imports/ImportFromSchool';
+import OrderNotes from './create/OrderNotes';
 
 export default function NewOrder() {
   const [books, setBooks] = useState<BookWithQuantity[]>([]);
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [notes, setNotes] = useState<string>('');
 
   const addBooks = useCallback(
     (newBooks: Book[]) => {
@@ -48,7 +50,8 @@ export default function NewOrder() {
       <ImportFromSchool addBooks={addBooks} />
       <BookList books={books} updateQuantity={updateQuantity} />
       <CustomerSelector customer={customer} setCustomer={setCustomer} />
-      <CreateOrder books={bookRecord} customer={customer} />
+      <OrderNotes value={notes} setValue={setNotes} />
+      <CreateOrder books={bookRecord} customer={customer} notes={notes} />
     </div>
   );
 }

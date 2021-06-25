@@ -79,6 +79,10 @@ export default function CustomerSelector({ customer, setCustomer }: Props) {
       <Card className={classes.root}>
         <CardContent>
           <Typography variant="h5">Escolher Cliente</Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            É possível procurar um cliente por nome, telemóvel ou email ou
+            adicionar novo cliente
+          </Typography>
           <div className={classes.row}>
             <Autocomplete
               className={classes.autocomplete}

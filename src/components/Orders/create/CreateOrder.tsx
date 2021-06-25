@@ -8,10 +8,11 @@ import routes from '../../../constants/routes';
 
 const { ipcRenderer } = require('electron');
 
-type Props = {
+interface Props {
   books: Record<string, number>;
   customer: Customer | null;
-};
+  notes: string;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreateOrder({ books, customer }: Props) {
+export default function CreateOrder({ books, customer, notes }: Props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
@@ -40,8 +41,8 @@ export default function CreateOrder({ books, customer }: Props) {
           enqueueSnackbar(`Erro ao criar a encomenda.`, { variant: 'error' });
       }
     );
-    ipcRenderer.send('db-create-order', customer?.id, books, 'test order');
-  }, [books, customer?.id, enqueueSnackbar, history]);
+    ipcRenderer.send('db-create-order', customer?.id, books, notes);
+  }, [books, customer?.id, enqueueSnackbar, history, notes]);
 
   return (
     <div className={classes.root}>
