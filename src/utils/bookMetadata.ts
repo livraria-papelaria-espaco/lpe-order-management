@@ -62,6 +62,7 @@ const getBookType = (response: string, title: string) => {
       'livro de fichas',
       'fichas de consolidação',
       'livro de tarefas',
+      'cardeno de fichas',
     ].some((v) => text.toLowerCase().trim().includes(v))
   );
   const type = typeIndex === -1 ? 'manual' : 'ca';
