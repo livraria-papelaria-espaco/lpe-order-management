@@ -13,7 +13,13 @@ ipcMain.on(
     try {
       const id = await db.transaction(async (trx) => {
         const [orderId] = await trx
-          .insert({ customer_id: customerId, status: 'pending', notes })
+          .insert({
+            created_at: db.fn.now(),
+            updated_at: db.fn.now(),
+            customer_id: customerId,
+            status: 'pending',
+            notes,
+          })
           .into('orders');
 
         await Promise.all(
