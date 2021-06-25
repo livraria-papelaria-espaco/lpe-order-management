@@ -8,15 +8,17 @@ import {
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
+import { Customer } from '../../types/database';
 
 const { ipcRenderer } = require('electron');
 
 type Props = {
   open: boolean;
   handleClose(): void;
+  createdCallback?(customer: Customer): void;
 };
 
-export default function CustomerAddDialog({ open, handleClose }: Props) {
+const CustomerAddDialog = ({ open, handleClose, createdCallback }: Props) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -31,12 +33,15 @@ export default function CustomerAddDialog({ open, handleClose }: Props) {
     if (name) {
       ipcRenderer.once(
         'db-result-customers-insert',
-        (_: never, args: number | boolean) => {
+        (_: never, args: number | false) => {
           if (args) {
             handleClose();
             enqueueSnackbar(`Cliente adicionado com sucesso!`, {
               variant: 'success',
             });
+            if (createdCallback) {
+              createdCallback({ id: args, name, phone, email });
+            }
             setName('');
             setPhone('');
             setEmail('');
@@ -100,4 +105,10 @@ export default function CustomerAddDialog({ open, handleClose }: Props) {
       </form>
     </Dialog>
   );
-}
+};
+
+CustomerAddDialog.defaultProps = {
+  createdCallback: null,
+};
+
+export default CustomerAddDialog;

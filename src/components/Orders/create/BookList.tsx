@@ -1,7 +1,13 @@
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Card, CardContent, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
 import { BookWithQuantity } from '../../../types/database';
 import BookItem from './BookItem';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
+  },
+}));
 
 type Props = {
   books: BookWithQuantity[];
@@ -9,8 +15,10 @@ type Props = {
 };
 
 export default function BookList({ books, updateQuantity }: Props) {
+  const classes = useStyles();
+
   return (
-    <Card>
+    <Card className={classes.root}>
       <CardContent>
         <Typography variant="h5">Lista de Livros</Typography>
         {books.map((book) => (
@@ -20,6 +28,11 @@ export default function BookList({ books, updateQuantity }: Props) {
             updateQuantity={updateQuantity}
           />
         ))}
+        {books.length === 0 && (
+          <Typography color="textSecondary">
+            Adicione livros para criar uma encomenda
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

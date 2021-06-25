@@ -1,12 +1,14 @@
 import React, { useCallback, useState, useMemo } from 'react';
 
-import { Book, BookWithQuantity } from '../../types/database';
+import { Book, BookWithQuantity, Customer } from '../../types/database';
 import BookList from './create/BookList';
 import CreateOrder from './create/CreateOrder';
+import CustomerSelector from './create/CustomerSelector';
 import ImportFromSchool from './imports/ImportFromSchool';
 
 export default function NewOrder() {
   const [books, setBooks] = useState<BookWithQuantity[]>([]);
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
   const addBooks = useCallback(
     (newBooks: Book[]) => {
@@ -45,7 +47,8 @@ export default function NewOrder() {
     <div>
       <ImportFromSchool addBooks={addBooks} />
       <BookList books={books} updateQuantity={updateQuantity} />
-      <CreateOrder books={bookRecord} />
+      <CustomerSelector customer={customer} setCustomer={setCustomer} />
+      <CreateOrder books={bookRecord} customer={customer} />
     </div>
   );
 }
