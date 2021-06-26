@@ -111,3 +111,61 @@ ipcMain.on('db-orders-find', async (event: IpcMainEvent) => {
 
   event.reply('db-result-orders-find', orders);
 });
+
+ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
+  try {
+    const result = await db
+      .select(
+        'orders.id as orderId',
+        'status',
+        'notes',
+        'orders.created_at',
+        'orders.updated_at',
+        'customers.id as customerId',
+        'customers.name as customerName',
+        'customers.phone as customerPhone',
+        'customers.email as customerEmail'
+      )
+      .orderBy('orders.created_at', 'desc')
+      .leftJoin('customers', 'orders.customer_id', 'customers.id')
+      .where('orders.id', id)
+      .from('orders');
+
+    const orderBooks = await db
+      .select(
+        'id',
+        'books.isbn as isbn',
+        'target_quantity as targetQuantity',
+        'ordered_quantity as orderedQuantity',
+        'available_quantity as availableQuantity',
+        'pickedup_quantity as pickedupQuantity',
+        'name',
+        'publisher',
+        'provider',
+        'type',
+        'schoolYear',
+        'codePe',
+        'stock'
+      )
+      .where('order_id', result[0].orderId)
+      .leftJoin('books', 'orders_books.isbn', 'books.isbn')
+      .from('orders_books');
+    event.reply('db-result-order-find-one', {
+      id: result[0].orderId,
+      customer: {
+        id: result[0].customerId,
+        name: result[0].customerName,
+        phone: result[0].customerPhone,
+        email: result[0].customerEmail,
+      },
+      status: result[0].status,
+      created_at: result[0].created_at,
+      updated_at: result[0].updated_at,
+      notes: result[0].notes,
+      books: orderBooks,
+    });
+  } catch (e) {
+    log.error('Failed to find an order by ID', e);
+    event.reply('db-result-order-find-one', false);
+  }
+});

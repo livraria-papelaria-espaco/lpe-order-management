@@ -48,9 +48,8 @@ export interface Order extends Timestamp {
   bookCount?: number;
 }
 
-export interface BookOrder {
+export interface BookOrder extends Book {
   id: number;
-  isbn: string;
   targetQuantity: number;
   orderedQuantity: number;
   availableQuantity: number;

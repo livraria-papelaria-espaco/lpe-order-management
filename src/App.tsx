@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage';
 import OrderNewPage from './pages/OrderNewPage';
 import OrdersPage from './pages/OrdersPage';
 import Root from './pages/Root';
+import OrderPage from './pages/OrderPage';
 
 const theme = createMuiTheme({
   palette: {
@@ -35,6 +36,7 @@ export default function App() {
               <Route path={routes.BOOK} component={BookPage} />
               <Route path={routes.BOOKS} component={BooksPage} />
               <Route path={routes.ORDERS_NEW} component={OrderNewPage} />
+              <Route path={routes.ORDER} component={OrderPage} />
               <Route path={routes.ORDERS} component={OrdersPage} />
               <Route path={routes.HOME} component={HomePage} />
             </Switch>

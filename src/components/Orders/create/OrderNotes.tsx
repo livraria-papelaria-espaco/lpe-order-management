@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CustomerSelector({ value, setValue }: Props) {
+export default function OrderNotes({ value, setValue }: Props) {
   const classes = useStyles();
 
   const handleChange = useCallback(

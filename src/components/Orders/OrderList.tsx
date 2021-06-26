@@ -1,6 +1,5 @@
 import {
   Button,
-  Chip,
   Paper,
   Table,
   TableBody,
@@ -12,9 +11,9 @@ import {
 import SeeIcon from '@material-ui/icons/VisibilityRounded';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { orderStatus } from '../../constants/enums';
 import routes from '../../constants/routes';
 import { BookOrder, Order } from '../../types/database';
+import OrderStatusChip from './OrderStatusChip';
 
 const { ipcRenderer } = require('electron');
 
@@ -24,7 +23,6 @@ export default function CustomerList() {
 
   useEffect(() => {
     ipcRenderer.once('db-result-orders-find', (_: never, args: Order[]) => {
-      console.log(args);
       setOrders([...args]);
     });
     ipcRenderer.send('db-orders-find');
@@ -58,10 +56,7 @@ export default function CustomerList() {
                   {order.customer?.name}
                 </TableCell>
                 <TableCell>
-                  <Chip
-                    style={{ backgroundColor: orderStatus[order.status].color }}
-                    label={orderStatus[order.status].displayName}
-                  />
+                  <OrderStatusChip status={order.status} />
                 </TableCell>
                 <TableCell>{order.created_at}</TableCell>
                 <TableCell>{`${order.books?.reduce(
