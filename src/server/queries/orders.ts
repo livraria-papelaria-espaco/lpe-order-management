@@ -37,13 +37,7 @@ ipcMain.on(
 
             const availableQuantity = Math.min(stock, quantity);
 
-            if (stock !== 0) {
-              await trx('books')
-                .update({ stock: stock - availableQuantity })
-                .where('isbn', isbn);
-            }
-
-            await trx
+            const [orderBookId] = await trx
               .insert({
                 order_id: orderId,
                 isbn,
@@ -53,6 +47,21 @@ ipcMain.on(
                 pickedup_quantity: 0,
               })
               .into('orders_books');
+
+            if (stock !== 0) {
+              await trx('books')
+                .update({ stock: stock - availableQuantity })
+                .where('isbn', isbn);
+
+              await trx
+                .insert({
+                  orders_books_id: orderBookId,
+                  timestamp: db.fn.now(),
+                  quantity: availableQuantity,
+                  type: 'from_stock',
+                })
+                .into('orders_books_history');
+            }
           })
         );
 
@@ -150,7 +159,8 @@ ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
       .where('order_id', result[0].orderId)
       .leftJoin('books', 'orders_books.isbn', 'books.isbn')
       .from('orders_books');
-    event.reply('db-result-order-find-one', {
+
+    const order = {
       id: result[0].orderId,
       customer: {
         id: result[0].customerId,
@@ -162,8 +172,20 @@ ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
       created_at: result[0].created_at,
       updated_at: result[0].updated_at,
       notes: result[0].notes,
-      books: orderBooks,
-    });
+      books: await Promise.all(
+        orderBooks.map(async (orderBook) => ({
+          ...orderBook,
+          history: [
+            ...(await db
+              .select('id', 'timestamp', 'quantity', 'type')
+              .where('orders_books_id', orderBook.id)
+              .from('orders_books_history')),
+          ],
+        }))
+      ),
+    };
+
+    event.reply('db-result-order-find-one', order);
   } catch (e) {
     log.error('Failed to find an order by ID', e);
     event.reply('db-result-order-find-one', false);

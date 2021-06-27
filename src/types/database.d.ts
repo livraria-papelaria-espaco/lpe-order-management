@@ -53,4 +53,18 @@ export interface BookOrder extends Book {
   orderedQuantity: number;
   availableQuantity: number;
   pickedupQuantity: number;
+  history?: BookOrderHistory[];
+}
+
+export type BookOrderHistoryType =
+  | 'from_stock'
+  | 'ordered'
+  | 'arrived'
+  | 'pickedup';
+
+export interface BookOrderHistory {
+  id: number;
+  quantity: number;
+  timestamp: Date;
+  type: BookOrderHistoryType;
 }

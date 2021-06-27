@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { BookOrder } from '../../../types/database';
+import BookListRow from './BookListRow';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -32,6 +33,7 @@ export default function OrderBookList({ books }: Props) {
           <Table aria-label="order table">
             <TableHead>
               <TableRow>
+                <TableCell />
                 <TableCell>Livro</TableCell>
                 <TableCell>Qnt. Alvo</TableCell>
                 <TableCell>Qnt. Por Encomendar</TableCell>
@@ -41,21 +43,7 @@ export default function OrderBookList({ books }: Props) {
             </TableHead>
             <TableBody>
               {books.map((book: BookOrder) => (
-                <TableRow hover key={book.id}>
-                  <TableCell>
-                    <Typography>{book.name}</Typography>
-                    <Typography color="textSecondary">
-                      {book.isbn}
-                      {book.codePe && ` (${book.codePe})`}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>{book.targetQuantity}</TableCell>
-                  <TableCell>
-                    {book.targetQuantity - book.orderedQuantity}
-                  </TableCell>
-                  <TableCell>{book.availableQuantity}</TableCell>
-                  <TableCell>{book.pickedupQuantity}</TableCell>
-                </TableRow>
+                <BookListRow book={book} key={book.id} />
               ))}
             </TableBody>
           </Table>
