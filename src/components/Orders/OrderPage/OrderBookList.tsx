@@ -34,7 +34,7 @@ export default function OrderBookList({ books }: Props) {
               <TableRow>
                 <TableCell>Livro</TableCell>
                 <TableCell>Qnt. Alvo</TableCell>
-                <TableCell>Qnt. Encomendada</TableCell>
+                <TableCell>Qnt. Por Encomendar</TableCell>
                 <TableCell>Qnt. Disponível</TableCell>
                 <TableCell>Qnt. Levantada</TableCell>
               </TableRow>
@@ -50,7 +50,9 @@ export default function OrderBookList({ books }: Props) {
                     </Typography>
                   </TableCell>
                   <TableCell>{book.targetQuantity}</TableCell>
-                  <TableCell>{book.orderedQuantity}</TableCell>
+                  <TableCell>
+                    {book.targetQuantity - book.orderedQuantity}
+                  </TableCell>
                   <TableCell>{book.availableQuantity}</TableCell>
                   <TableCell>{book.pickedupQuantity}</TableCell>
                 </TableRow>
@@ -64,8 +66,8 @@ export default function OrderBookList({ books }: Props) {
           <strong>Qnt. Alvo: </strong>Quantidade que o cliente encomendou.
         </Typography>
         <Typography>
-          <strong>Qnt. Encomenda: </strong>Quantidade que já foi encomendada à
-          distribuidora e ainda não chegou.
+          <strong>Qnt. Por Encomendar: </strong>Quantidade que falta encomendar
+          à distribuidora.
         </Typography>
         <Typography>
           <strong>Qnt. Disponível: </strong>Quantidade disponível para

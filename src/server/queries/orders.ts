@@ -49,7 +49,7 @@ ipcMain.on(
                 isbn,
                 target_quantity: quantity,
                 available_quantity: availableQuantity,
-                ordered_quantity: 0,
+                ordered_quantity: availableQuantity,
                 pickedup_quantity: 0,
               })
               .into('orders_books');
