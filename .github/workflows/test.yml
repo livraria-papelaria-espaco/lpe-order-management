@@ -19,6 +19,12 @@ jobs:
         with:
           node-version: 15
 
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: node_modules-${{ hashFiles('**/yarn.lock') }}
+
       - name: yarn install
         run: |
           yarn install --frozen-lockfile --network-timeout 300000
