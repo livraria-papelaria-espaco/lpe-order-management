@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 
 exports.up = (knex: Knex) =>
   knex.schema.alterTable('customers', (table) => {

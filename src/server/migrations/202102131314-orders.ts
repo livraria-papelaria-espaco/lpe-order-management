@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 
 exports.up = async (knex: Knex) => {
   await knex.schema.createTable('orders', (table) => {
