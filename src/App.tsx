@@ -12,6 +12,7 @@ import OrderNewPage from './pages/OrderNewPage';
 import OrdersPage from './pages/OrdersPage';
 import Root from './pages/Root';
 import OrderPage from './pages/OrderPage';
+import DistributorConfigurationPage from './pages/DistributorConfigurationPage';
 
 const theme = createMuiTheme({
   palette: {
@@ -38,6 +39,10 @@ export default function App() {
               <Route path={routes.ORDERS_NEW} component={OrderNewPage} />
               <Route path={routes.ORDER} component={OrderPage} />
               <Route path={routes.ORDERS} component={OrdersPage} />
+              <Route
+                path={routes.EXTERNAL_ORDER_SETTINGS}
+                component={DistributorConfigurationPage}
+              />
               <Route path={routes.HOME} component={HomePage} />
             </Switch>
           </Root>

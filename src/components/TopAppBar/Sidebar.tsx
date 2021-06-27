@@ -9,7 +9,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import clsx from 'clsx';
 import React from 'react';
 import drawer from '../../constants/drawer';
-import { mainListItems, secondaryListItems } from './listItems';
+import { mainListItems, externalOrderListItems } from './listItems';
 import VersionIndicator from './VersionIndicator';
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +70,7 @@ export default function Sidebar({ open, handleDrawerClose }: Props) {
       <Divider />
       <List>{mainListItems}</List>
       <Divider />
-      <List>{secondaryListItems}</List>
+      <List>{externalOrderListItems}</List>
       <div className={classes.grow} />
       {open && (
         <>

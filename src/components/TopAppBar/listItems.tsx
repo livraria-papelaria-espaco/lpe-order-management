@@ -4,11 +4,13 @@ import {
   ListItemText,
   ListSubheader,
 } from '@material-ui/core';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import OrderOutIcon from '@material-ui/icons/ArrowDownwardRounded';
+import OrderInIcon from '@material-ui/icons/ArrowUpwardRounded';
 import BookIcon from '@material-ui/icons/BookRounded';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import LayersIcon from '@material-ui/icons/Layers';
 import PeopleIcon from '@material-ui/icons/PeopleRounded';
+import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartRounded';
 import React from 'react';
 import routes from '../../constants/routes';
@@ -38,26 +40,23 @@ export const mainListItems = (
   </div>
 );
 
-export const secondaryListItems = (
+export const externalOrderListItems = (
   <div>
-    <ListSubheader inset>Saved reports</ListSubheader>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Current month" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Last quarter" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Year-end sale" />
-    </ListItem>
+    <ListSubheader inset>Encomendas Externas</ListSubheader>
+    <LinkItem
+      icon={<SettingsIcon />}
+      text="Configuração Dist."
+      to={routes.EXTERNAL_ORDER_SETTINGS}
+    />
+    <LinkItem
+      icon={<OrderOutIcon />}
+      text="Saída de Produtos"
+      to={routes.EXTERNAL_ORDER_OUT}
+    />
+    <LinkItem
+      icon={<OrderInIcon />}
+      text="Entrada de Produtos"
+      to={routes.EXTERNAL_ORDER_IN}
+    />
   </div>
 );

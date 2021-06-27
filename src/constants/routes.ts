@@ -7,4 +7,7 @@ export default {
   ORDERS_NEW: '/orders/new',
   BOOKS: '/books',
   BOOK: '/books/:id',
+  EXTERNAL_ORDER_SETTINGS: '/external/settings',
+  EXTERNAL_ORDER_OUT: '/external/out',
+  EXTERNAL_ORDER_IN: '/external/in',
 };
