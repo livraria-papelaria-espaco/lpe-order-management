@@ -20,7 +20,6 @@ export interface Book extends Timestamp {
   isbn: string;
   name: string;
   publisher: string;
-  provider: string;
   type: 'manual' | 'ca' | 'other';
   schoolYear: number;
   codePe: string;

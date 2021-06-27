@@ -38,7 +38,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
   const [isbn, setISBN] = useState('');
   const [name, setName] = useState('');
   const [publisher, setPublisher] = useState('');
-  const [provider, setProvider] = useState('');
   const [type, setType] = useState('other');
   const [schoolYear, setSchoolYear] = useState('');
   const [codePe, setCodePe] = useState('');
@@ -64,7 +63,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
             setISBN('');
             setName('');
             setPublisher('');
-            setProvider('');
             setType('other');
             setSchoolYear('');
             setCodePe('');
@@ -80,7 +78,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
         isbn,
         name,
         publisher,
-        provider,
         type,
         schoolYear,
         codePe,
@@ -107,7 +104,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
           setISBN(result.isbn ?? isbn);
           setName(result.name ?? name);
           setPublisher(result.publisher ?? publisher);
-          setProvider(result.provider ?? provider);
           setType(result.type ?? type);
           setSchoolYear((result.schoolYear ?? schoolYear).toString());
           setCodePe(result.codePe ?? codePe);
@@ -164,14 +160,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
             onChange={handleChange(setPublisher)}
             margin="dense"
             label="Editora"
-            type="text"
-            fullWidth
-          />
-          <TextField
-            value={provider}
-            onChange={handleChange(setProvider)}
-            margin="dense"
-            label="Fornecedor"
             type="text"
             fullWidth
           />

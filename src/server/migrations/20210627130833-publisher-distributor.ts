@@ -2,8 +2,8 @@ import { Knex } from 'knex';
 
 exports.up = async (knex: Knex) => {
   await knex.schema.createTable('publisher_distributor', (table) => {
-    table.string('publisher', 30).primary();
-    table.string('distributor', 30);
+    table.string('publisher', 60).primary();
+    table.string('distributor', 60);
   });
 };
 

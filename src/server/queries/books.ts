@@ -15,7 +15,6 @@ type BookInsertArgs = {
   isbn: string;
   name: string;
   publisher: string;
-  provider: string;
   type: 'manual' | 'ca' | 'other';
   schoolYear: string;
   codePe: string;
@@ -33,7 +32,6 @@ ipcMain.on(
           isbn: args.isbn,
           name: args.name || '',
           publisher: args.publisher || '',
-          provider: args.provider || '',
           type: args.type || '',
           codePe: args.codePe || '',
           stock: parseInt(args.stock, 10) || 0,
@@ -55,7 +53,6 @@ ipcMain.on('db-book-find-one', async (event: IpcMainEvent, isbn: string) => {
         'isbn',
         'name',
         'publisher',
-        'provider',
         'type',
         'schoolYear',
         'codePe',
@@ -81,7 +78,6 @@ ipcMain.on(
         .update({
           name: args.name,
           publisher: args.publisher,
-          provider: args.provider,
           type: args.type,
           codePe: args.codePe,
           stock: parseInt(args.stock, 10) || 0,

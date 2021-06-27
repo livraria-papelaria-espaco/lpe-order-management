@@ -42,7 +42,6 @@ export default function BookData({ book }: Props) {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(book?.name);
   const [publisher, setPublisher] = useState(book?.publisher);
-  const [provider, setProvider] = useState(book?.provider);
   const [type, setType] = useState(book?.type);
   const [schoolYear, setSchoolYear] = useState(
     book?.schoolYear.toString(10) ?? ''
@@ -69,7 +68,6 @@ export default function BookData({ book }: Props) {
       });
       setName(book?.name);
       setPublisher(book?.publisher);
-      setProvider(book?.provider);
       setType(book?.type);
       setSchoolYear(book?.schoolYear.toString(10) ?? '');
       setCodePe(book?.codePe);
@@ -87,7 +85,6 @@ export default function BookData({ book }: Props) {
       isbn: book.isbn,
       name,
       publisher,
-      provider,
       type,
       schoolYear: parseInt(schoolYear, 10),
       codePe,
@@ -112,7 +109,6 @@ export default function BookData({ book }: Props) {
         }
         setName(result.name ?? name);
         setPublisher(result.publisher ?? publisher);
-        setProvider(result.provider ?? provider);
         setType(result.type ?? type);
         setSchoolYear((result.schoolYear ?? schoolYear).toString());
         setCodePe(result.codePe ?? codePe);
@@ -120,7 +116,6 @@ export default function BookData({ book }: Props) {
           isbn: book.isbn,
           name: result.name ?? name,
           publisher: result.publisher ?? publisher,
-          provider: result.provider ?? provider,
           type: result.type ?? type,
           schoolYear: result.schoolYear ?? schoolYear,
           codePe: result.codePe ?? codePe,
@@ -172,17 +167,6 @@ export default function BookData({ book }: Props) {
             label="Editora"
             value={publisher}
             onChange={handleChange(setPublisher)}
-            InputProps={{
-              readOnly: !edit,
-            }}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Fornecedor"
-            value={provider}
-            onChange={handleChange(setProvider)}
             InputProps={{
               readOnly: !edit,
             }}

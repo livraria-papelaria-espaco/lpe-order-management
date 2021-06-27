@@ -22,10 +22,6 @@ const getPublisherData = (publisher: string, wookId: string) => {
         provider: 'Porto Editora',
         publisherUrl: `www.raizeditora.pt/produtos/ficha/${wookId}`,
       };
-    case 'Texto Editores':
-      return { publisher, provider: 'Leya' };
-    case 'Edições Asa':
-      return { publisher, provider: 'Leya' };
     default:
       return { publisher, provider: publisher };
   }
