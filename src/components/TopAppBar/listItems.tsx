@@ -1,14 +1,8 @@
-import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-} from '@material-ui/core';
+import { ListSubheader } from '@material-ui/core';
 import OrderOutIcon from '@material-ui/icons/ArrowDownwardRounded';
 import OrderInIcon from '@material-ui/icons/ArrowUpwardRounded';
 import BookIcon from '@material-ui/icons/BookRounded';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import LayersIcon from '@material-ui/icons/Layers';
 import PeopleIcon from '@material-ui/icons/PeopleRounded';
 import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartRounded';
@@ -31,12 +25,6 @@ export const mainListItems = (
     />
     <LinkItem icon={<PeopleIcon />} text="Clientes" to={routes.CUSTOMERS} />
     <LinkItem icon={<BookIcon />} text="Livros" to={routes.BOOKS} />
-    <ListItem button>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
-    </ListItem>
   </div>
 );
 
