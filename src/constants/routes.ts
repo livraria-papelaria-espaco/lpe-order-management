@@ -9,5 +9,6 @@ export default {
   BOOK: '/books/:id',
   EXTERNAL_ORDER_SETTINGS: '/external/settings',
   EXTERNAL_ORDER_OUT: '/external/out',
+  EXTERNAL_ORDER_OUT_DIST: '/external/out/distributor/:name',
   EXTERNAL_ORDER_IN: '/external/in',
 };

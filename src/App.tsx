@@ -13,6 +13,8 @@ import OrdersPage from './pages/OrdersPage';
 import Root from './pages/Root';
 import OrderPage from './pages/OrderPage';
 import DistributorConfigurationPage from './pages/DistributorConfigurationPage';
+import DistributorSelectPage from './pages/DistributorSelectPage';
+import DistributorProductExport from './pages/DistributorProductExport';
 
 const theme = createMuiTheme({
   palette: {
@@ -43,6 +45,16 @@ export default function App() {
                 path={routes.EXTERNAL_ORDER_SETTINGS}
                 component={DistributorConfigurationPage}
               />
+              <Route
+                path={routes.EXTERNAL_ORDER_OUT_DIST}
+                component={DistributorProductExport}
+              />
+              <Route path={routes.EXTERNAL_ORDER_OUT}>
+                <DistributorSelectPage
+                  title="Saída de Produtos"
+                  nextRoute={routes.EXTERNAL_ORDER_OUT_DIST}
+                />
+              </Route>
               <Route path={routes.HOME} component={HomePage} />
             </Switch>
           </Root>

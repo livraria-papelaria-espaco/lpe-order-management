@@ -16,11 +16,13 @@ export type CustomerPage = {
 
 export type CustomerQueryResult = CustomerPage | false;
 
+export type BookType = 'manual' | 'ca' | 'other';
+
 export interface Book extends Timestamp {
   isbn: string;
   name: string;
   publisher: string;
-  type: 'manual' | 'ca' | 'other';
+  type: BookType;
   schoolYear: number;
   codePe: string;
   stock: number;
