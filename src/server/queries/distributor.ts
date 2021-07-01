@@ -1,5 +1,7 @@
-import { ipcMain, IpcMainEvent } from 'electron';
+import { ipcMain, IpcMainEvent, dialog } from 'electron';
 import log from 'electron-log';
+import xlsx from 'xlsx';
+import { BookWithQuantity } from '../../types/database';
 import db from '../database';
 
 ipcMain.on('db-find-publisher-distributor-map', async (event: IpcMainEvent) => {
@@ -144,5 +146,43 @@ ipcMain.on(
     }
 
     event.reply('db-distributor-export-books-result', count);
+  }
+);
+
+const createPortoEditoraExport = (
+  filePath: string,
+  books: BookWithQuantity[]
+) => {
+  const wb = xlsx.utils.book_new();
+  const ws = xlsx.utils.aoa_to_sheet([
+    ['QT', 'CDPE'],
+    ...books.map((book) => [book.quantity, book.codePe]),
+  ]);
+  xlsx.utils.book_append_sheet(wb, ws);
+
+  xlsx.writeFile(wb, filePath);
+};
+
+ipcMain.on(
+  'save-custom-distributor-excel',
+  async (
+    event: IpcMainEvent,
+    distributor: string,
+    books: BookWithQuantity[]
+  ) => {
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      defaultPath: 'porto-editora.xlsx',
+    });
+
+    if (!filePath || canceled) {
+      event.reply('save-custom-distributor-excel-result', false);
+      return;
+    }
+
+    if (distributor === 'porto-editora') {
+      createPortoEditoraExport(filePath, books);
+    }
+
+    event.reply('save-custom-distributor-excel-result', true);
   }
 );

@@ -13,11 +13,11 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
+import DownloadIcon from '@material-ui/icons/GetAppRounded';
 import MarkOrderedIcon from '@material-ui/icons/PlaylistAddCheckRounded';
-
+import { Alert } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
+import React, { useEffect, useState } from 'react';
 import { BookWithQuantity } from '../../types/database';
 import BookTypeChip from '../Book/BookTypeChip';
 
@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonSection: {
     marginTop: theme.spacing(2),
+  },
+  buttonMargin: {
+    marginLeft: theme.spacing(2),
   },
 }));
 
@@ -77,6 +80,28 @@ export default function ExportBooks({ products, refreshProducts }: Props) {
     );
 
     ipcRenderer.send('db-distributor-export-books', selection);
+  };
+
+  const handleCustomExcelDownload = (distributor: string) => () => {
+    ipcRenderer.once(
+      'save-custom-distributor-excel-result',
+      (_: unknown, success: boolean) => {
+        if (success)
+          enqueueSnackbar('Lista de livros exportada com sucesso!', {
+            variant: 'success',
+          });
+        else
+          enqueueSnackbar('Exportação de lista de livros cancelada', {
+            variant: 'error',
+          });
+      }
+    );
+
+    ipcRenderer.send(
+      'save-custom-distributor-excel',
+      distributor,
+      products.filter((product) => selection.indexOf(product.isbn) >= 0)
+    );
   };
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,6 +196,15 @@ export default function ExportBooks({ products, refreshProducts }: Props) {
           onClick={handleMarkOrdered}
         >
           Marcar como encomendados
+        </Button>
+        <Button
+          className={classes.buttonMargin}
+          variant="outlined"
+          startIcon={<DownloadIcon />}
+          disabled={selection.length === 0}
+          onClick={handleCustomExcelDownload('porto-editora')}
+        >
+          Obter Excel Porto Editora
         </Button>
       </div>
     </div>
