@@ -51,6 +51,7 @@ export default function OrderBookList({ book }: Props) {
           <Typography color="textSecondary">
             {book.isbn}
             {book.codePe && ` (${book.codePe})`}
+            {` | ${book.publisher}`}
           </Typography>
         </TableCell>
         <TableCell>{book.targetQuantity}</TableCell>

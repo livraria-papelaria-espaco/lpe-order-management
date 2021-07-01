@@ -159,7 +159,12 @@ export default function ExportBooks({ products, refreshProducts }: Props) {
                   <Checkbox checked={selection.indexOf(product.isbn) >= 0} />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {product.name}
+                  <Typography>{product.name}</Typography>
+                  <Typography color="textSecondary">
+                    {product.isbn}
+                    {product.codePe && ` (${product.codePe})`}
+                    {` | ${product.publisher}`}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <BookTypeChip type={product.type} />
