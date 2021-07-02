@@ -1,4 +1,5 @@
 import axios from 'axios';
+import log from 'electron-log';
 
 const WOOK_REGEX = /<script type="application\/ld\+json">[^]*?({[^]+})[^]*?<\/script>[^]*?<!-- Fim Google/;
 
@@ -37,6 +38,7 @@ const getBookCodeFromPEGroup = async (publisherUrl: string) => {
         )?.[1] || '',
     };
   } catch (e) {
+    log.error('Failed to get book code from PE group', publisherUrl, e);
     return {};
   }
 };
@@ -95,6 +97,7 @@ export const getMetadataByURL = async (url: string) => {
       };
     return metadata;
   } catch (e) {
+    log.error('Failed to get book metadata', url, e);
     return false;
   }
 };

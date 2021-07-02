@@ -32,7 +32,7 @@ ipcMain.on('order-import-wook-open', (event: IpcMainEvent) => {
 
       if (data.length > 0) {
         clearInterval(intervalId);
-        event.reply('order-import-wook-result', data);
+        event.reply('order-import-wook-open-result', data);
         window.destroy();
       }
     } catch (e) {
@@ -42,16 +42,25 @@ ipcMain.on('order-import-wook-open', (event: IpcMainEvent) => {
 
   window.on('close', () => {
     clearInterval(intervalId);
-    event.reply('order-import-wook-result', false);
+    event.reply('order-import-wook-open-result', false);
   });
 });
 
 ipcMain.on(
   'order-import-wook-parse',
   async (event: IpcMainEvent, books: string[]) => {
+    const booksUnique = [...new Set(books)];
+
     const metadata = await Promise.all(
-      books.map((url) => getMetadataByURL(`https://wook.pt/Artigos/?id=${url}`))
+      booksUnique.map((url) =>
+        getMetadataByURL(`https://wook.pt/Artigos/?id=${url}`)
+      )
     );
-    event.reply('order-import-wook-parse-result', metadata);
+
+    event.reply(
+      'order-import-wook-parse-result',
+      // filter out failed books
+      metadata.filter((book) => !!book)
+    );
   }
 );

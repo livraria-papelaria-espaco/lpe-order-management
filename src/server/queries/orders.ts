@@ -150,7 +150,6 @@ ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
         'pickedup_quantity as pickedupQuantity',
         'name',
         'publisher',
-        'provider',
         'type',
         'schoolYear',
         'codePe',

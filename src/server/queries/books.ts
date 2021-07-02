@@ -2,6 +2,7 @@ import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
 import db from '../database';
 import getBookMetadata from '../../utils/bookMetadata';
+import { Book } from '../../types/database';
 
 ipcMain.on('db-books-find', async (event: IpcMainEvent) => {
   const result = await db
@@ -11,13 +12,8 @@ ipcMain.on('db-books-find', async (event: IpcMainEvent) => {
   event.reply('db-result-books-find', result);
 });
 
-type BookInsertArgs = {
-  isbn: string;
-  name: string;
-  publisher: string;
-  type: 'manual' | 'ca' | 'other';
+type BookInsertArgs = Book & {
   schoolYear: string;
-  codePe: string;
   stock: string;
 };
 
@@ -42,6 +38,55 @@ ipcMain.on(
     } catch (e) {
       log.error('Failed to insert book', e);
       event.reply('db-result-books-insert', false);
+    }
+  }
+);
+
+ipcMain.on(
+  'db-books-insert-or-get',
+  async (event: IpcMainEvent, args: Book[]) => {
+    try {
+      const books = await db.transaction(async (trx) => {
+        return Promise.all(
+          args.map(async (book) => {
+            const result = await trx
+              .select(
+                'isbn',
+                'name',
+                'publisher',
+                'type',
+                'schoolYear',
+                'codePe',
+                'stock',
+                'created_at',
+                'updated_at'
+              )
+              .where('isbn', book?.isbn)
+              .from('books');
+            if (result.length === 0) {
+              await trx
+                .insert({
+                  created_at: db.fn.now(),
+                  updated_at: db.fn.now(),
+                  isbn: book.isbn,
+                  name: book.name || '',
+                  publisher: book.publisher || '',
+                  type: book.type || '',
+                  codePe: book.codePe || '',
+                  stock: book.stock || 0,
+                  schoolYear: book.schoolYear || null,
+                })
+                .into('books');
+              return book;
+            }
+            return result[0];
+          })
+        );
+      });
+      event.reply('db-books-insert-or-get-result', books);
+    } catch (e) {
+      log.error(e);
+      event.reply('db-books-insert-or-get-result', false);
     }
   }
 );

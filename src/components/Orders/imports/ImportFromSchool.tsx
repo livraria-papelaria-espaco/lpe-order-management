@@ -10,8 +10,11 @@ import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import wookLogo from '../../../assets/wook.png';
 import { Book } from '../../../types/database';
-
-const { ipcRenderer } = require('electron');
+import {
+  importFromWook,
+  insertOrGetBooks,
+  parseImportFromWook,
+} from '../../../utils/api';
 
 type Props = {
   addBooks: (books: Array<Book>) => void;
@@ -38,35 +41,42 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ImportFromSchool({ addBooks }: Props) {
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const openWook = () => {
-    ipcRenderer.send('order-import-wook-open');
+  const openWook = async () => {
+    setOpen(true);
+    const wookIds = await importFromWook();
+    setOpen(false);
 
-    ipcRenderer.once(
-      'order-import-wook-result',
-      (_: never, result: string[]) => {
-        if (result) {
-          setLoading(true);
-          ipcRenderer.send('order-import-wook-parse', result);
+    if (!wookIds) {
+      enqueueSnackbar(`Operação cancelada.`, { variant: 'error' });
+      return;
+    }
 
-          ipcRenderer.once(
-            'order-import-wook-parse-result',
-            (__: never, parseResult: Book[]) => {
-              setLoading(false);
-              parseResult.forEach((book) =>
-                ipcRenderer.send('db-books-insert', book)
-              );
-              addBooks(parseResult);
-            }
-          );
-          return;
-        }
-        enqueueSnackbar(`Operação cancelada.`, { variant: 'error' });
-      }
-    );
+    setLoading(true);
+    const bookData = await parseImportFromWook(wookIds);
+    const insertedBookData = await insertOrGetBooks(bookData);
+
+    setLoading(false);
+    if (!insertedBookData) {
+      enqueueSnackbar('Ocorreu um erro a guardar os livros', {
+        variant: 'error',
+      });
+      return;
+    }
+
+    addBooks(insertedBookData);
+
+    if (wookIds.length > insertedBookData.length)
+      enqueueSnackbar(
+        `Não foi possível importar ${
+          wookIds.length - insertedBookData.length
+        } livro(s)`,
+        { variant: 'warning' }
+      );
   };
 
   /* TODO Disable navigation and screen interaction while Wook is open */
@@ -74,7 +84,7 @@ export default function ImportFromSchool({ addBooks }: Props) {
   return (
     <div className={classes.root}>
       <Card className={classes.cardContent}>
-        <CardActionArea disabled={loading} onClick={openWook}>
+        <CardActionArea disabled={open || loading} onClick={openWook}>
           <img className={classes.cardImage} src={wookLogo} alt="Wook" />
           <CardContent>
             <Typography variant="h5">Importar por ano e escola</Typography>
