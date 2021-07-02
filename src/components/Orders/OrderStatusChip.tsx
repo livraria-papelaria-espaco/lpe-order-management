@@ -11,8 +11,8 @@ interface Props {
 export default function OrderStatusChip({ status }: Props) {
   return (
     <Chip
-      style={{ backgroundColor: orderStatus[status].color, color: '#fff' }}
-      label={orderStatus[status].displayName}
+      style={{ backgroundColor: orderStatus[status]?.color, color: '#fff' }}
+      label={orderStatus[status]?.displayName}
     />
   );
 }

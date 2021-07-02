@@ -10,8 +10,8 @@ interface Props {
 export default function OrderStatusChip({ type }: Props) {
   return (
     <Chip
-      style={{ backgroundColor: bookTypes[type].color, color: '#fff' }}
-      label={bookTypes[type].displayName}
+      style={{ backgroundColor: bookTypes[type]?.color, color: '#fff' }}
+      label={bookTypes[type]?.displayName}
     />
   );
 }
