@@ -13,6 +13,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import routes from '../../constants/routes';
 import { Book } from '../../types/database';
+import { findAllBooks } from '../../utils/api';
 import BookTypeChip from './BookTypeChip';
 
 const { ipcRenderer } = require('electron');
@@ -21,11 +22,9 @@ export default function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
   const history = useHistory();
 
-  const refreshView = useCallback(() => {
-    ipcRenderer.once('db-result-books-find', (_: never, args: Book[]) =>
-      setBooks([...args])
-    );
-    ipcRenderer.send('db-books-find');
+  const refreshView = useCallback(async () => {
+    const bookList = await findAllBooks();
+    setBooks([...bookList]);
   }, []);
   const handleEventRefresh = useCallback(
     (_, sucess) => sucess && refreshView(),

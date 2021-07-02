@@ -6,10 +6,10 @@ import { Book } from '../../types/database';
 
 ipcMain.on('db-books-find', async (event: IpcMainEvent) => {
   const result = await db
-    .select('isbn', 'name', 'publisher', 'type', 'stock')
+    .select('isbn', 'name', 'publisher', 'type', 'stock', 'codePe')
     .orderBy('updated_at', 'desc')
     .from('books');
-  event.reply('db-result-books-find', result);
+  event.reply('db-books-find-result', result);
 });
 
 type BookInsertArgs = Book & {

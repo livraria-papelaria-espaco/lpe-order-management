@@ -21,5 +21,7 @@ export const parseImportFromWook = (wookIds: string[]) =>
 
 /* books.ts */
 
+export const findAllBooks = () => fetchFromIpc<Book[]>('db-books-find');
+
 export const insertOrGetBooks = (books: Book[]) =>
   fetchFromIpc<Book[]>('db-books-insert-or-get', books);
