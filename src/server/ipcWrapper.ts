@@ -4,7 +4,8 @@ import log from 'electron-log';
 
 export const registerListener = (
   channel: string,
-  func: (...args: any[]) => any | Promise<any>
+  func: (...args: any[]) => any | Promise<any>,
+  errorResponse: any = false
 ) => {
   ipcMain.on(channel, async (event: IpcMainEvent, ...args: any[]) => {
     try {
@@ -19,6 +20,8 @@ export const registerListener = (
         `An unhandled exception happened while handling channel ${channel}`,
         error
       );
+
+      event.reply(`${channel}-result`, errorResponse);
     }
   });
 };

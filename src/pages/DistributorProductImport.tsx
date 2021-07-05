@@ -1,15 +1,17 @@
 import { Typography } from '@material-ui/core';
-import React, { useState } from 'react';
-import BackButton from '../components/BackButton';
+import React from 'react';
 import ImportBooks from '../components/External/ImportBooks';
 import { BookWithQuantity } from '../types/database';
+import useLocalStorage from '../utils/hooks';
 
 export default function DistributorProductExport() {
-  const [products, setProducts] = useState<BookWithQuantity[]>([]);
+  const [products, setProducts] = useLocalStorage<BookWithQuantity[]>(
+    'distributor-import',
+    []
+  );
 
   return (
     <div>
-      <BackButton />
       <Typography variant="h5" gutterBottom>
         Importar Produtos de Encomenda
       </Typography>

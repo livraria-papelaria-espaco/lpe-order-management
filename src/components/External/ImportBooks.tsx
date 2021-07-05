@@ -15,6 +15,7 @@ import MarkArrivedIcon from '@material-ui/icons/PlaceRounded';
 import { useSnackbar } from 'notistack';
 import React, { useCallback } from 'react';
 import { BookWithQuantity } from '../../types/database';
+import { importBooksDistributor } from '../../utils/api';
 import BookQuantityInput from '../Book/BookQuantityInput';
 import BookTypeChip from '../Book/BookTypeChip';
 
@@ -55,6 +56,19 @@ export default function ImportBooks({ products, setProducts }: Props) {
     [enqueueSnackbar, setProducts]
   );
 
+  const handleMarkArrived = async () => {
+    const success = await importBooksDistributor(products);
+    if (!success) {
+      enqueueSnackbar(`Ocorreu um erro ao importar livros da distribuidora`, {
+        variant: 'error',
+      });
+      return;
+    }
+
+    enqueueSnackbar(`Livros importados com sucesso!`, { variant: 'success' });
+    setProducts([]);
+  };
+
   return (
     <div>
       <TableContainer component={Paper}>
@@ -94,7 +108,7 @@ export default function ImportBooks({ products, setProducts }: Props) {
           variant="contained"
           startIcon={<MarkArrivedIcon />}
           disabled={products.length === 0}
-          // onClick={handleMarkArrived}
+          onClick={handleMarkArrived}
         >
           Marcar como recebido
         </Button>

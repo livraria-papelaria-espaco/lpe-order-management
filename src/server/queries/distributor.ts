@@ -1,8 +1,10 @@
+import { Knex } from 'knex';
 import { ipcMain, IpcMainEvent, dialog } from 'electron';
 import log from 'electron-log';
 import xlsx from 'xlsx';
 import { BookWithQuantity } from '../../types/database';
 import db from '../database';
+import { registerListener } from '../ipcWrapper';
 
 ipcMain.on('db-find-publisher-distributor-map', async (event: IpcMainEvent) => {
   const results = await db
@@ -110,12 +112,11 @@ ipcMain.on(
                 'orders_books.ordered_quantity as orderedQuantity'
               )
               .from('orders_books')
-              .leftJoin('books', 'orders_books.isbn', 'books.isbn')
               .whereNot(
                 'orders_books.target_quantity',
-                'orders_books.ordered_quantity'
+                trx.ref('orders_books.ordered_quantity')
               )
-              .andWhere('books.isbn', isbn);
+              .andWhere('orders_books.isbn', isbn);
 
             await Promise.all(
               ordersBooks.map(async (order) => {
@@ -184,5 +185,97 @@ ipcMain.on(
     }
 
     event.reply('save-custom-distributor-excel-result', true);
+  }
+);
+
+const recalculateOrderStatus = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  trx: Knex.Transaction<any, any[]>,
+  id: number
+) => {
+  const [order] = await trx.select('status').from('orders').where('id', id);
+  if (order.status !== 'pending') return;
+
+  const orderBooks = await trx
+    .select('id')
+    .from('orders_books')
+    .whereNot('target_quantity', trx.ref('available_quantity'))
+    .andWhere('order_id', id);
+
+  if (orderBooks.length > 0) return;
+
+  await trx('orders').update({ status: 'ready' }).where('id', id);
+};
+
+registerListener(
+  'db-distributor-import-books',
+  async (books: BookWithQuantity[]) => {
+    const modifiedOrderIds = new Set<number>();
+    await db.transaction(async (trx) => {
+      await Promise.all(
+        books.map(async ({ isbn, quantity }) => {
+          let remainingQuantity = quantity;
+
+          const orderBooks = await trx
+            .select(
+              'orders_books.id as id',
+              'orders_books.ordered_quantity as orderedQuantity',
+              'orders_books.available_quantity as availableQuantity',
+              'orders.id as orderId'
+            )
+            .from('orders_books')
+            .leftJoin('orders', 'orders_books.order_id', 'orders.id')
+            .whereNot(
+              'orders_books.ordered_quantity',
+              trx.ref('orders_books.available_quantity')
+            )
+            .andWhere('orders_books.isbn', isbn)
+            .orderBy('orders.created_at', 'asc');
+
+          await Promise.all(
+            orderBooks.map(
+              async ({ id, orderedQuantity, availableQuantity, orderId }) => {
+                modifiedOrderIds.add(orderId);
+
+                const toAdd = Math.min(
+                  remainingQuantity,
+                  orderedQuantity - availableQuantity
+                );
+                remainingQuantity -= toAdd;
+
+                if (toAdd !== 0) {
+                  await trx('orders_books')
+                    .update({ available_quantity: availableQuantity + toAdd })
+                    .where('id', id);
+
+                  await trx
+                    .insert({
+                      orders_books_id: id,
+                      timestamp: trx.fn.now(),
+                      quantity: toAdd,
+                      type: 'arrived',
+                    })
+                    .into('orders_books_history');
+                }
+              }
+            )
+          );
+
+          if (remainingQuantity > 0) {
+            const [book] = await trx
+              .select('stock')
+              .from('books')
+              .where('isbn', isbn);
+            await trx('books')
+              .update({ stock: book.stock + remainingQuantity })
+              .where('isbn', isbn);
+          }
+        })
+      );
+      await Promise.all(
+        [...modifiedOrderIds].map((id) => recalculateOrderStatus(trx, id))
+      );
+    });
+    return true;
   }
 );

@@ -1,4 +1,4 @@
-import { Book } from '../types/database';
+import { Book, BookWithQuantity } from '../types/database';
 
 const { ipcRenderer } = require('electron');
 
@@ -11,6 +11,18 @@ export const fetchFromIpc = <T>(channel: string, ...args: unknown[]) =>
     ipcRenderer.send(channel, ...args);
   });
 
+/* books.ts */
+
+export const findAllBooks = () => fetchFromIpc<Book[]>('db-books-find');
+
+export const insertOrGetBooks = (books: Book[]) =>
+  fetchFromIpc<Book[]>('db-books-insert-or-get', books);
+
+/* distributor.ts */
+
+export const importBooksDistributor = (books: BookWithQuantity[]) =>
+  fetchFromIpc<boolean>('db-distributor-import-books', books);
+
 /* orderImports.ts */
 
 export const importFromWook = () =>
@@ -18,10 +30,3 @@ export const importFromWook = () =>
 
 export const parseImportFromWook = (wookIds: string[]) =>
   fetchFromIpc<Book[]>('order-import-wook-parse', wookIds);
-
-/* books.ts */
-
-export const findAllBooks = () => fetchFromIpc<Book[]>('db-books-find');
-
-export const insertOrGetBooks = (books: Book[]) =>
-  fetchFromIpc<Book[]>('db-books-insert-or-get', books);
