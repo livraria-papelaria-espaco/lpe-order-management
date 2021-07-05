@@ -1,4 +1,4 @@
-import { Book, BookWithQuantity } from '../types/database';
+import { Book, BookWithQuantity, OrderStatus } from '../types/database';
 
 const { ipcRenderer } = require('electron');
 
@@ -30,3 +30,8 @@ export const importFromWook = () =>
 
 export const parseImportFromWook = (wookIds: string[]) =>
   fetchFromIpc<Book[]>('order-import-wook-parse', wookIds);
+
+/* orders.ts */
+
+export const moveOrderToNextStatus = (orderId: number) =>
+  fetchFromIpc<OrderStatus | false>('db-order-next-status', orderId);

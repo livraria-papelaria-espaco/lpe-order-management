@@ -38,7 +38,7 @@ export default function OrderOnePage() {
   return (
     <div>
       <BackButton />
-      <OrderData order={data} />
+      <OrderData order={data} setOrder={setData} />
     </div>
   );
 }

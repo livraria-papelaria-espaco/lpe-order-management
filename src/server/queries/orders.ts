@@ -1,6 +1,7 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
 import db from '../database';
+import { registerListener } from '../ipcWrapper';
 
 ipcMain.on(
   'db-create-order',
@@ -189,4 +190,15 @@ ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
     log.error('Failed to find an order by ID', e);
     event.reply('db-result-order-find-one', false);
   }
+});
+
+registerListener('db-order-next-status', async (orderId: number) => {
+  const [order] = await db.select('status').from('orders').where('id', orderId);
+  const { status } = order;
+  let newStatus;
+  if (status === 'ready') newStatus = 'notified';
+
+  if (!newStatus) return false;
+  await db('orders').update({ status: newStatus }).where('id', orderId);
+  return newStatus;
 });

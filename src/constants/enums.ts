@@ -24,11 +24,11 @@ export const orderStatus = {
   },
   notified: {
     displayName: 'Cliente Notificado',
-    color: '#38cff4',
+    color: '#2095b2',
   },
   finished: {
     displayName: 'Finalizada',
-    color: '#61ea3f',
+    color: '#4cce2b',
   },
 };
 

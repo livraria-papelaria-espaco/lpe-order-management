@@ -1,8 +1,8 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
-import db from '../database';
-import getBookMetadata from '../../utils/bookMetadata';
 import { Book } from '../../types/database';
+import getBookMetadata from '../../utils/bookMetadata';
+import db from '../database';
 
 ipcMain.on('db-books-find', async (event: IpcMainEvent) => {
   const result = await db

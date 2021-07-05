@@ -1,13 +1,16 @@
 import {
+  Button,
   Card,
   CardContent,
   Grid,
+  makeStyles,
   TextField,
   Typography,
-  makeStyles,
 } from '@material-ui/core';
-import React from 'react';
+import { useSnackbar } from 'notistack';
+import React, { useCallback } from 'react';
 import { Order } from '../../../types/database';
+import { moveOrderToNextStatus } from '../../../utils/api';
 import OrderStatusChip from '../OrderStatusChip';
 import OrderBookList from './OrderBookList';
 
@@ -15,14 +18,33 @@ const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(1),
   },
+  nextStatusBtn: {
+    margin: theme.spacing(1),
+  },
 }));
 
 interface Props {
   order: Order;
+  setOrder: React.Dispatch<React.SetStateAction<Order | undefined>>;
 }
 
-export default function OrderData({ order }: Props) {
+export default function OrderData({ order, setOrder }: Props) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleNextStatus = useCallback(async () => {
+    const newStatus = await moveOrderToNextStatus(order.id);
+
+    if (!newStatus) {
+      enqueueSnackbar('Erro ao mudar o estado da encomenda', {
+        variant: 'error',
+      });
+      return;
+    }
+
+    setOrder({ ...order, status: newStatus });
+    enqueueSnackbar('Estado alterado com sucesso', { variant: 'success' });
+  }, [enqueueSnackbar, order, setOrder]);
 
   return (
     <div>
@@ -44,6 +66,16 @@ export default function OrderData({ order }: Props) {
             <Grid item xs={12} sm={6} md={4}>
               <Typography variant="h6">Estado</Typography>
               <OrderStatusChip status={order.status} />
+              {order.status === 'ready' && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleNextStatus}
+                  className={classes.nextStatusBtn}
+                >
+                  Marcar como avisado
+                </Button>
+              )}
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Typography variant="h6">Data de Encomenda</Typography>
