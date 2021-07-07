@@ -1,5 +1,5 @@
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import BackButton from '../components/BackButton';
 import Loading from '../components/Loading';
@@ -18,7 +18,7 @@ export default function OrderOnePage() {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
+  const loadData = useCallback(() => {
     ipcRenderer.send('db-order-find-one', id);
     ipcRenderer.once(
       'db-result-order-find-one',
@@ -33,12 +33,16 @@ export default function OrderOnePage() {
     );
   }, [enqueueSnackbar, history, id]);
 
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
   if (!data) return <Loading />;
 
   return (
     <div>
       <BackButton />
-      <OrderData order={data} setOrder={setData} />
+      <OrderData order={data} updateHook={loadData} />
     </div>
   );
 }

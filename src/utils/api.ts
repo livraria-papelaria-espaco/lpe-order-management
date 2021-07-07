@@ -35,3 +35,8 @@ export const parseImportFromWook = (wookIds: string[]) =>
 
 export const moveOrderToNextStatus = (orderId: number) =>
   fetchFromIpc<OrderStatus | false>('db-order-next-status', orderId);
+
+export const pickupProducts = (
+  orderId: number,
+  bookMap: Record<string, number>
+) => fetchFromIpc<boolean>('db-order-pick-up', orderId, bookMap);

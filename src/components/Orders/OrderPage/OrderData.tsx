@@ -8,11 +8,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Order } from '../../../types/database';
 import { moveOrderToNextStatus } from '../../../utils/api';
 import OrderStatusChip from '../OrderStatusChip';
 import OrderBookList from './OrderBookList';
+import PickupBooksDialog from './PickupBooksDialog';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -21,16 +22,25 @@ const useStyles = makeStyles((theme) => ({
   nextStatusBtn: {
     margin: theme.spacing(1),
   },
+  headerBar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 interface Props {
   order: Order;
-  setOrder: React.Dispatch<React.SetStateAction<Order | undefined>>;
+  updateHook(): void;
 }
 
-export default function OrderData({ order, setOrder }: Props) {
+export default function OrderData({ order, updateHook }: Props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const [pickupDialogOpen, setPickupDialogOpen] = useState(false);
+
+  const togglePickupDialog = () => setPickupDialogOpen((state) => !state);
 
   const handleNextStatus = useCallback(async () => {
     const newStatus = await moveOrderToNextStatus(order.id);
@@ -42,15 +52,26 @@ export default function OrderData({ order, setOrder }: Props) {
       return;
     }
 
-    setOrder({ ...order, status: newStatus });
+    updateHook();
     enqueueSnackbar('Estado alterado com sucesso', { variant: 'success' });
-  }, [enqueueSnackbar, order, setOrder]);
+  }, [enqueueSnackbar, order, updateHook]);
 
   return (
     <div>
-      <Typography variant="h4" className={classes.card}>
-        Encomenda #{order.id}
-      </Typography>
+      <div className={classes.headerBar}>
+        <Typography variant="h4" className={classes.card}>
+          Encomenda #{order.id}
+        </Typography>
+        <Button color="primary" variant="outlined" onClick={togglePickupDialog}>
+          Levantamento de Produtos
+        </Button>
+        <PickupBooksDialog
+          order={order}
+          open={pickupDialogOpen}
+          handleToggle={togglePickupDialog}
+          updateHook={updateHook}
+        />
+      </div>
       <Card className={classes.card}>
         <CardContent>
           <Typography variant="h5">Informação</Typography>
@@ -73,7 +94,7 @@ export default function OrderData({ order, setOrder }: Props) {
                   onClick={handleNextStatus}
                   className={classes.nextStatusBtn}
                 >
-                  Marcar como avisado
+                  Marcar como notificado
                 </Button>
               )}
             </Grid>

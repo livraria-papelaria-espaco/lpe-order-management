@@ -1,5 +1,6 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
+import { Knex } from 'knex';
 import db from '../database';
 import { registerListener } from '../ipcWrapper';
 
@@ -202,3 +203,67 @@ registerListener('db-order-next-status', async (orderId: number) => {
   await db('orders').update({ status: newStatus }).where('id', orderId);
   return newStatus;
 });
+
+const recalculateOrderStatus = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  trx: Knex.Transaction<any, any[]>,
+  id: number
+) => {
+  const orderBooks = await trx
+    .select('id')
+    .from('orders_books')
+    .whereNot('target_quantity', trx.ref('pickedup_quantity'))
+    .andWhere('order_id', id);
+
+  if (orderBooks.length > 0) return;
+
+  await trx('orders').update({ status: 'finished' }).where('id', id);
+};
+
+registerListener(
+  'db-order-pick-up',
+  async (orderId: number, bookMap: Record<string, number>) => {
+    await db.transaction(async (trx) => {
+      await Promise.all(
+        Object.entries(bookMap).map(async ([isbn, quantity]) => {
+          if (quantity === 0) return;
+
+          const [
+            { id, availableQuantity, pickedupQuantity },
+          ] = await trx
+            .select(
+              'id',
+              'id',
+              'available_quantity as availableQuantity',
+              'pickedup_quantity as pickedupQuantity'
+            )
+            .from('orders_books')
+            .where('isbn', isbn)
+            .andWhere('order_id', orderId);
+
+          if (availableQuantity - pickedupQuantity < quantity)
+            throw new Error(
+              `Tried to pickup more quantity than available (${
+                availableQuantity - pickedupQuantity
+              } < ${quantity}). Order ${orderId}. ISBN ${isbn}`
+            );
+
+          await trx('orders_books')
+            .update({ pickedup_quantity: pickedupQuantity + quantity })
+            .where('id', id);
+
+          await trx
+            .insert({
+              orders_books_id: id,
+              timestamp: trx.fn.now(),
+              quantity,
+              type: 'pickedup',
+            })
+            .into('orders_books_history');
+        })
+      );
+      await recalculateOrderStatus(trx, orderId);
+    });
+    return true;
+  }
+);
