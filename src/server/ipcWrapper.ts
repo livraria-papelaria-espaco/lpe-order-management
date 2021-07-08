@@ -7,23 +7,26 @@ export const registerListener = (
   func: (...args: any[]) => any | Promise<any>,
   errorResponse: any = false
 ) => {
-  ipcMain.on(channel, async (event: IpcMainEvent, ...args: any[]) => {
-    try {
-      log.debug(`Handling IPC event on channel ${channel}`);
+  ipcMain.on(
+    channel,
+    async (event: IpcMainEvent, id: number, ...args: any[]) => {
+      try {
+        log.debug(`Handling IPC event on channel ${channel}`);
 
-      const result = await func(...args);
-      event.reply(`${channel}-result`, result);
+        const result = await func(...args);
+        event.reply(`${channel}-result-${id}`, result);
 
-      log.debug(`Finished handling IPC event for channel ${channel}`);
-    } catch (error) {
-      log.error(
-        `An unhandled exception happened while handling channel ${channel}`,
-        error
-      );
+        log.debug(`Finished handling IPC event for channel ${channel}`);
+      } catch (error) {
+        log.error(
+          `An unhandled exception happened while handling channel ${channel}`,
+          error
+        );
 
-      event.reply(`${channel}-result`, errorResponse);
+        event.reply(`${channel}-result-${id}`, errorResponse);
+      }
     }
-  });
+  );
 };
 
 export default {

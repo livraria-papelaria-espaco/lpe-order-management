@@ -3,13 +3,14 @@ import log from 'electron-log';
 import { Book } from '../../types/database';
 import getBookMetadata from '../../utils/bookMetadata';
 import db from '../database';
+import { registerListener } from '../ipcWrapper';
 
-ipcMain.on('db-books-find', async (event: IpcMainEvent) => {
+registerListener('db-books-find', async () => {
   const result = await db
     .select('isbn', 'name', 'publisher', 'type', 'stock', 'codePe')
     .orderBy('updated_at', 'desc')
     .from('books');
-  event.reply('db-books-find-result', result);
+  return result;
 });
 
 type BookInsertArgs = Book & {
@@ -42,54 +43,46 @@ ipcMain.on(
   }
 );
 
-ipcMain.on(
-  'db-books-insert-or-get',
-  async (event: IpcMainEvent, args: Book[]) => {
-    try {
-      const books = await db.transaction(async (trx) => {
-        return Promise.all(
-          args.map(async (book) => {
-            const result = await trx
-              .select(
-                'isbn',
-                'name',
-                'publisher',
-                'type',
-                'schoolYear',
-                'codePe',
-                'stock',
-                'created_at',
-                'updated_at'
-              )
-              .where('isbn', book?.isbn)
-              .from('books');
-            if (result.length === 0) {
-              await trx
-                .insert({
-                  created_at: db.fn.now(),
-                  updated_at: db.fn.now(),
-                  isbn: book.isbn,
-                  name: book.name || '',
-                  publisher: book.publisher || '',
-                  type: book.type || '',
-                  codePe: book.codePe || '',
-                  stock: book.stock || 0,
-                  schoolYear: book.schoolYear || null,
-                })
-                .into('books');
-              return book;
-            }
-            return result[0];
-          })
-        );
-      });
-      event.reply('db-books-insert-or-get-result', books);
-    } catch (e) {
-      log.error(e);
-      event.reply('db-books-insert-or-get-result', false);
-    }
-  }
-);
+registerListener('db-books-insert-or-get', async (args: Book[]) => {
+  const books = await db.transaction(async (trx) => {
+    return Promise.all(
+      args.map(async (book) => {
+        const result = await trx
+          .select(
+            'isbn',
+            'name',
+            'publisher',
+            'type',
+            'schoolYear',
+            'codePe',
+            'stock',
+            'created_at',
+            'updated_at'
+          )
+          .where('isbn', book?.isbn)
+          .from('books');
+        if (result.length === 0) {
+          await trx
+            .insert({
+              created_at: db.fn.now(),
+              updated_at: db.fn.now(),
+              isbn: book.isbn,
+              name: book.name || '',
+              publisher: book.publisher || '',
+              type: book.type || '',
+              codePe: book.codePe || '',
+              stock: book.stock || 0,
+              schoolYear: book.schoolYear || null,
+            })
+            .into('books');
+          return book;
+        }
+        return result[0];
+      })
+    );
+  });
+  return books;
+});
 
 ipcMain.on('db-book-find-one', async (event: IpcMainEvent, isbn: string) => {
   try {

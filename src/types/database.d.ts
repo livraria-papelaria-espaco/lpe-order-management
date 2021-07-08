@@ -49,6 +49,10 @@ export interface Order extends Timestamp {
   bookCount?: number;
 }
 
+export interface FetchOrdersParams {
+  status?: OrderStatus;
+}
+
 export interface BookOrder extends Book {
   id: number;
   targetQuantity: number;

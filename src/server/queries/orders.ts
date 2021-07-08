@@ -1,6 +1,7 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
 import { Knex } from 'knex';
+import { FetchOrdersParams } from '../../types/database';
 import db from '../database';
 import { registerListener } from '../ipcWrapper';
 
@@ -78,8 +79,8 @@ ipcMain.on(
   }
 );
 
-ipcMain.on('db-orders-find', async (event: IpcMainEvent) => {
-  const result = await db
+registerListener('db-orders-find', async (params: FetchOrdersParams) => {
+  let query = db
     .select(
       'orders.id as orderId',
       'status',
@@ -92,6 +93,10 @@ ipcMain.on('db-orders-find', async (event: IpcMainEvent) => {
     .orderBy('orders.created_at', 'desc')
     .leftJoin('customers', 'orders.customer_id', 'customers.id')
     .from('orders');
+
+  if (params?.status) query = query.where('orders.status', params?.status);
+
+  const result = await query;
 
   const orders = await Promise.all(
     result.map(async (v) => ({
@@ -120,7 +125,7 @@ ipcMain.on('db-orders-find', async (event: IpcMainEvent) => {
     }))
   );
 
-  event.reply('db-result-orders-find', orders);
+  return orders;
 });
 
 ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {

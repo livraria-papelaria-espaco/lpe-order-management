@@ -1,14 +1,23 @@
-import { Book, BookWithQuantity, OrderStatus } from '../types/database';
+import {
+  Book,
+  BookWithQuantity,
+  FetchOrdersParams,
+  Order,
+  OrderStatus,
+} from '../types/database';
 
 const { ipcRenderer } = require('electron');
 
+let requestId = 0;
+
 export const fetchFromIpc = <T>(channel: string, ...args: unknown[]) =>
   new Promise<T>((resolve) => {
-    ipcRenderer.once(`${channel}-result`, (_: unknown, result: T) =>
+    const id = requestId++;
+    ipcRenderer.once(`${channel}-result-${id}`, (_: unknown, result: T) =>
       resolve(result)
     );
 
-    ipcRenderer.send(channel, ...args);
+    ipcRenderer.send(channel, id, ...args);
   });
 
 /* books.ts */
@@ -32,6 +41,9 @@ export const parseImportFromWook = (wookIds: string[]) =>
   fetchFromIpc<Book[]>('order-import-wook-parse', wookIds);
 
 /* orders.ts */
+
+export const fetchOrders = (params?: FetchOrdersParams) =>
+  fetchFromIpc<Order[]>('db-orders-find', params);
 
 export const moveOrderToNextStatus = (orderId: number) =>
   fetchFromIpc<OrderStatus | false>('db-order-next-status', orderId);

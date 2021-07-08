@@ -9,24 +9,18 @@ import {
   TableRow,
 } from '@material-ui/core';
 import SeeIcon from '@material-ui/icons/VisibilityRounded';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
 import routes from '../../constants/routes';
 import { BookOrder, Order } from '../../types/database';
 import OrderStatusChip from './OrderStatusChip';
 
-const { ipcRenderer } = require('electron');
+interface Props {
+  orders: Order[];
+}
 
-export default function CustomerList() {
-  const [orders, setOrders] = useState<Order[]>([]);
+export default function CustomerList({ orders }: Props) {
   const history = useHistory();
-
-  useEffect(() => {
-    ipcRenderer.once('db-result-orders-find', (_: never, args: Order[]) => {
-      setOrders([...args]);
-    });
-    ipcRenderer.send('db-orders-find');
-  }, []);
 
   return (
     <div>

@@ -1,9 +1,11 @@
 import { Fab, makeStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import OrderList from '../components/Orders/OrderList';
 import routes from '../constants/routes';
+import { Order } from '../types/database';
+import { fetchOrders } from '../utils/api';
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -17,12 +19,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function OrdersPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
   const history = useHistory();
   const classes = useStyles();
 
+  useEffect(() => {
+    fetchOrders()
+      .then(setOrders)
+      .catch(() => {});
+  }, []);
+
   return (
     <div>
-      <OrderList />
+      <OrderList orders={orders} />
       <Fab
         variant="extended"
         color="secondary"
