@@ -55,7 +55,10 @@ export default function CustomerList({ orders }: Props) {
                 <TableCell>{order.created_at}</TableCell>
                 <TableCell>{`${order.books?.reduce(
                   (sum: number, book: BookOrder) =>
-                    sum + book.availableQuantity + book.pickedupQuantity,
+                    sum + book.availableQuantity,
+                  0
+                )}/${order.books?.reduce(
+                  (sum: number, book: BookOrder) => sum + book.pickedupQuantity,
                   0
                 )}/${order.books?.reduce(
                   (sum: number, book: BookOrder) => sum + book.targetQuantity,

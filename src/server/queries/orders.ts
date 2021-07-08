@@ -95,6 +95,8 @@ registerListener('db-orders-find', async (params: FetchOrdersParams) => {
     .from('orders');
 
   if (params?.status) query = query.where('orders.status', params?.status);
+  if (params?.customerId)
+    query = query.where('orders.customer_id', params?.customerId);
 
   const result = await query;
 

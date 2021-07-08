@@ -1,6 +1,7 @@
 import {
   Book,
   BookWithQuantity,
+  Customer,
   FetchOrdersParams,
   Order,
   OrderStatus,
@@ -26,6 +27,11 @@ export const findAllBooks = () => fetchFromIpc<Book[]>('db-books-find');
 
 export const insertOrGetBooks = (books: Book[]) =>
   fetchFromIpc<Book[]>('db-books-insert-or-get', books);
+
+/* customers.ts */
+
+export const fetchCustomer = (id: number) =>
+  fetchFromIpc<Customer | false>('db-customer-find-one', id);
 
 /* distributor.ts */
 

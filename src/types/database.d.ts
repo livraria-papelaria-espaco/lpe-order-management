@@ -10,12 +10,6 @@ export interface Customer extends Timestamp {
   email: string;
 }
 
-export type CustomerPage = {
-  customer: Customer;
-};
-
-export type CustomerQueryResult = CustomerPage | false;
-
 export type BookType = 'manual' | 'ca' | 'other';
 
 export interface Book extends Timestamp {
@@ -51,6 +45,7 @@ export interface Order extends Timestamp {
 
 export interface FetchOrdersParams {
   status?: OrderStatus;
+  customerId?: number;
 }
 
 export interface BookOrder extends Book {

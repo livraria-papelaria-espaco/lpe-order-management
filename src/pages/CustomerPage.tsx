@@ -4,9 +4,8 @@ import { useHistory, useParams } from 'react-router';
 import BackButton from '../components/BackButton';
 import CustomerData from '../components/Customer/CustomerPage/CustomerData';
 import Loading from '../components/Loading';
-import { CustomerPage, CustomerQueryResult } from '../types/database';
-
-const { ipcRenderer } = require('electron');
+import { Customer, Order } from '../types/database';
+import { fetchCustomer, fetchOrders } from '../utils/api';
 
 type ParamType = {
   id: string | undefined;
@@ -14,31 +13,35 @@ type ParamType = {
 
 export default function CustomersPage() {
   const { id } = useParams<ParamType>();
-  const [data, setData] = useState<CustomerPage>();
+  const [customer, setCustomer] = useState<Customer | false>(false);
+  const [orders, setOrders] = useState<Order[]>([]);
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    ipcRenderer.send('db-customer-find-one', id);
-    ipcRenderer.once(
-      'db-result-customer-find-one',
-      (_: never, response: CustomerQueryResult) => {
-        if (!response) {
-          enqueueSnackbar('Cliente não encontrado', { variant: 'error' });
-          history.goBack();
-          return;
-        }
-        setData(response);
+    (async () => {
+      const [customerResult, ordersResult] = await Promise.all([
+        fetchCustomer(parseInt(id ?? '-1', 10)),
+        fetchOrders({ customerId: parseInt(id ?? '-1', 10) }),
+      ]);
+
+      if (!customerResult) {
+        enqueueSnackbar('Cliente não encontrado', { variant: 'error' });
+        history.goBack();
+        return;
       }
-    );
+
+      setCustomer(customerResult);
+      setOrders(ordersResult);
+    })();
   }, [enqueueSnackbar, history, id]);
 
-  if (!data) return <Loading />;
+  if (!customer) return <Loading />;
 
   return (
     <div>
       <BackButton />
-      <CustomerData customer={data?.customer} />
+      <CustomerData customer={customer} orders={orders} />
     </div>
   );
 }

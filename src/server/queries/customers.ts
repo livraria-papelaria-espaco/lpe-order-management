@@ -1,6 +1,7 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
 import db from '../database';
+import { registerListener } from '../ipcWrapper';
 
 ipcMain.on('db-customers-find', async (event: IpcMainEvent) => {
   const result = await db
@@ -38,17 +39,12 @@ ipcMain.on(
   }
 );
 
-ipcMain.on('db-customer-find-one', async (event: IpcMainEvent, id: number) => {
-  try {
-    const customerData = await db
-      .select('id', 'name', 'phone', 'email', 'created_at', 'updated_at')
-      .where('id', id)
-      .from('customers');
-    event.reply('db-result-customer-find-one', { customer: customerData[0] });
-  } catch (e) {
-    log.error('Failed to find customer by ID', e);
-    event.reply('db-result-customer-find-one', false);
-  }
+registerListener('db-customer-find-one', async (id: number) => {
+  const customerData = await db
+    .select('id', 'name', 'phone', 'email', 'created_at', 'updated_at')
+    .where('id', id)
+    .from('customers');
+  return customerData[0];
 });
 
 ipcMain.on(

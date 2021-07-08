@@ -10,7 +10,8 @@ import EditIcon from '@material-ui/icons/EditRounded';
 import SaveIcon from '@material-ui/icons/SaveRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import { Customer } from '../../../types/database';
+import { Customer, Order } from '../../../types/database';
+import OrderList from '../../Orders/OrderList';
 import CustomerDelete from './CustomerDelete';
 
 const { ipcRenderer } = require('electron');
@@ -27,13 +28,17 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  ordersTitle: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 type Props = {
   customer: Customer;
+  orders: Order[];
 };
 
-export default function CustomerData({ customer }: Props) {
+export default function CustomerData({ customer, orders }: Props) {
   const classes = useStyles();
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(customer?.name);
@@ -77,61 +82,67 @@ export default function CustomerData({ customer }: Props) {
   };
 
   return (
-    <Paper className={classes.paper}>
-      <div className={classes.toolbar}>
-        <div className={classes.title}>
-          <Typography variant="h4">{name || 'Cliente'}</Typography>
-          <Typography variant="caption" color="textSecondary">
-            {`Adicionado em ${customer.created_at?.toLocaleString(
-              'pt-PT'
-            )} | Última atualização em ${customer.updated_at?.toLocaleString(
-              'pt-PT'
-            )}`}
-          </Typography>
+    <div>
+      <Paper className={classes.paper}>
+        <div className={classes.toolbar}>
+          <div className={classes.title}>
+            <Typography variant="h4">{name || 'Cliente'}</Typography>
+            <Typography variant="caption" color="textSecondary">
+              {`Adicionado em ${customer.created_at?.toLocaleString(
+                'pt-PT'
+              )} | Última atualização em ${customer.updated_at?.toLocaleString(
+                'pt-PT'
+              )}`}
+            </Typography>
+          </div>
+          <div>
+            <IconButton onClick={toggleEdit} color="secondary">
+              {edit ? <SaveIcon /> : <EditIcon />}
+            </IconButton>
+            <CustomerDelete id={customer?.id} />
+          </div>
         </div>
-        <div>
-          <IconButton onClick={toggleEdit} color="secondary">
-            {edit ? <SaveIcon /> : <EditIcon />}
-          </IconButton>
-          <CustomerDelete id={customer?.id} />
-        </div>
-      </div>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField
-            label="Nome"
-            value={name}
-            onChange={handleChange(setName)}
-            InputProps={{
-              readOnly: !edit,
-            }}
-            fullWidth
-            focused={edit}
-          />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Nome"
+              value={name}
+              onChange={handleChange(setName)}
+              InputProps={{
+                readOnly: !edit,
+              }}
+              fullWidth
+              focused={edit}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Telemóvel"
+              value={phone}
+              onChange={handleChange(setPhone)}
+              InputProps={{
+                readOnly: !edit,
+              }}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Email"
+              value={email}
+              onChange={handleChange(setEmail)}
+              InputProps={{
+                readOnly: !edit,
+              }}
+              fullWidth
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Telemóvel"
-            value={phone}
-            onChange={handleChange(setPhone)}
-            InputProps={{
-              readOnly: !edit,
-            }}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Email"
-            value={email}
-            onChange={handleChange(setEmail)}
-            InputProps={{
-              readOnly: !edit,
-            }}
-            fullWidth
-          />
-        </Grid>
-      </Grid>
-    </Paper>
+      </Paper>
+      <Typography variant="h5" gutterBottom className={classes.ordersTitle}>
+        Encomendas do Cliente
+      </Typography>
+      <OrderList orders={orders} />
+    </div>
   );
 }
