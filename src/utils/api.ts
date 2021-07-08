@@ -52,3 +52,6 @@ export const pickupProducts = (
   orderId: number,
   bookMap: Record<string, number>
 ) => fetchFromIpc<boolean>('db-order-pick-up', orderId, bookMap);
+
+export const getOrdersCountByStatus = () =>
+  fetchFromIpc<Record<OrderStatus, string> | null>('db-orders-count-by-status');

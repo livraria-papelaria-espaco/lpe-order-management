@@ -272,3 +272,20 @@ registerListener(
     return true;
   }
 );
+
+registerListener(
+  'db-orders-count-by-status',
+  async () => {
+    const result = await db
+      .select('status')
+      .count('id', { as: 'count' })
+      .from('orders')
+      .groupBy('status');
+
+    return result.reduce(
+      (acc, { status, count }) => ({ ...acc, [status]: count }),
+      {}
+    );
+  },
+  null
+);
