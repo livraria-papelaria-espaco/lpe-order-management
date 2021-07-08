@@ -43,8 +43,8 @@ export type OrderStatus = 'pending' | 'ready' | 'notified' | 'finished';
 export interface Order extends Timestamp {
   id: number;
   customer?: Customer;
-  status: OrderStatus;
-  notes: string;
+  status?: OrderStatus;
+  notes?: string;
   books?: BookOrder[];
   bookCount?: number;
 }

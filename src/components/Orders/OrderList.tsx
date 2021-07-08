@@ -50,7 +50,7 @@ export default function CustomerList({ orders }: Props) {
                   {order.customer?.name}
                 </TableCell>
                 <TableCell>
-                  <OrderStatusChip status={order.status} />
+                  <OrderStatusChip status={order.status ?? 'pending'} />
                 </TableCell>
                 <TableCell>{order.created_at}</TableCell>
                 <TableCell>{`${order.books?.reduce(

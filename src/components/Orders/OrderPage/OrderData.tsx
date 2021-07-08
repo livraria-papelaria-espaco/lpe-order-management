@@ -10,7 +10,7 @@ import {
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';
 import { Order } from '../../../types/database';
-import { moveOrderToNextStatus } from '../../../utils/api';
+import { moveOrderToNextStatus, updateOrder } from '../../../utils/api';
 import OrderStatusChip from '../OrderStatusChip';
 import OrderBookList from './OrderBookList';
 import PickupBooksDialog from './PickupBooksDialog';
@@ -56,6 +56,28 @@ export default function OrderData({ order, updateHook }: Props) {
     enqueueSnackbar('Estado alterado com sucesso', { variant: 'success' });
   }, [enqueueSnackbar, order, updateHook]);
 
+  const handleNotesChange = useCallback(
+    async (event) => {
+      const success = await updateOrder({
+        id: order.id,
+        notes: event.target.value,
+      });
+
+      if (!success) {
+        enqueueSnackbar('Erro ao atualizar as observações da encomenda', {
+          variant: 'error',
+        });
+        return;
+      }
+
+      updateHook();
+      enqueueSnackbar('Observações da encomenda atualizadas', {
+        variant: 'success',
+      });
+    },
+    [enqueueSnackbar, order.id, updateHook]
+  );
+
   return (
     <div>
       <div className={classes.headerBar}>
@@ -86,7 +108,7 @@ export default function OrderData({ order, updateHook }: Props) {
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Typography variant="h6">Estado</Typography>
-              <OrderStatusChip status={order.status} />
+              <OrderStatusChip status={order.status ?? 'pending'} />
               {order.status === 'ready' && (
                 <Button
                   variant="outlined"
@@ -112,10 +134,8 @@ export default function OrderData({ order, updateHook }: Props) {
         <CardContent>
           <Typography variant="h5">Observações</Typography>
           <TextField
-            value={order.notes}
-            InputProps={{
-              readOnly: true,
-            }}
+            defaultValue={order.notes}
+            onBlur={handleNotesChange}
             multiline
             variant="outlined"
             fullWidth

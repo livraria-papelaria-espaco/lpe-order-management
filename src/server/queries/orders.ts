@@ -1,7 +1,7 @@
 import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
 import { Knex } from 'knex';
-import { FetchOrdersParams } from '../../types/database';
+import { FetchOrdersParams, Order } from '../../types/database';
 import db from '../database';
 import { registerListener } from '../ipcWrapper';
 
@@ -289,3 +289,8 @@ registerListener(
   },
   null
 );
+
+registerListener('db-orders-update', async ({ id, ...data }: Order) => {
+  await db('orders').update(data).where('id', id);
+  return true;
+});

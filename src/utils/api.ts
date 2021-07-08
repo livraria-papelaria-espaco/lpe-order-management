@@ -55,3 +55,6 @@ export const pickupProducts = (
 
 export const getOrdersCountByStatus = () =>
   fetchFromIpc<Record<OrderStatus, string> | null>('db-orders-count-by-status');
+
+export const updateOrder = (order: Order) =>
+  fetchFromIpc<boolean>('db-orders-update', order);
