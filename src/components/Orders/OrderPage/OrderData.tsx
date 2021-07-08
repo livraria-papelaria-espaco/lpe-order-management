@@ -122,9 +122,11 @@ export default function OrderData({ order, updateHook }: Props) {
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <Typography variant="h6">Data de Encomenda</Typography>
-              <Typography>{order.created_at}</Typography>
+              <Typography>
+                {order.created_at?.toLocaleString('pt-PT')}
+              </Typography>
               <Typography color="textSecondary">
-                Última atualização a {order.updated_at}
+                Última atualização a {order.updated_at?.toLocaleString('pt-PT')}
               </Typography>
             </Grid>
           </Grid>

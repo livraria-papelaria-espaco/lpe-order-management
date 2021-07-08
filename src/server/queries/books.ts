@@ -4,6 +4,7 @@ import { Book } from '../../types/database';
 import getBookMetadata from '../../utils/bookMetadata';
 import db from '../database';
 import { registerListener } from '../ipcWrapper';
+import { parseDate } from '../utils';
 
 registerListener('db-books-find', async () => {
   const result = await db
@@ -55,9 +56,7 @@ registerListener('db-books-insert-or-get', async (args: Book[]) => {
             'type',
             'schoolYear',
             'codePe',
-            'stock',
-            'created_at',
-            'updated_at'
+            'stock'
           )
           .where('isbn', book?.isbn)
           .from('books');
@@ -100,7 +99,14 @@ ipcMain.on('db-book-find-one', async (event: IpcMainEvent, isbn: string) => {
       )
       .where('isbn', isbn)
       .from('books');
-    event.reply('db-result-book-find-one', { book: bookData[0] });
+    event.reply('db-result-book-find-one', {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      book: bookData[0].map((book: any) => ({
+        ...book,
+        created_at: parseDate(book.created_at),
+        updated_at: parseDate(book.updated_at),
+      })),
+    });
   } catch (e) {
     log.error('Failed to find a book by ISBN', e);
     event.reply('db-result-book-find-one', false);

@@ -52,7 +52,9 @@ export default function CustomerList({ orders }: Props) {
                 <TableCell>
                   <OrderStatusChip status={order.status ?? 'pending'} />
                 </TableCell>
-                <TableCell>{order.created_at}</TableCell>
+                <TableCell>
+                  {order.created_at?.toLocaleString('pt-PT')}
+                </TableCell>
                 <TableCell>{`${order.books?.reduce(
                   (sum: number, book: BookOrder) =>
                     sum + book.availableQuantity,

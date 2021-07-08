@@ -204,7 +204,9 @@ const recalculateOrderStatus = async (
 
   if (orderBooks.length > 0) return;
 
-  await trx('orders').update({ status: 'ready' }).where('id', id);
+  await trx('orders')
+    .update({ status: 'ready', updated_at: trx.fn.now() })
+    .where('id', id);
 };
 
 registerListener(

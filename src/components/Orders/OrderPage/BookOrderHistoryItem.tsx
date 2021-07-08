@@ -48,9 +48,7 @@ export default function BookOrderHistoryItem({ history }: Props) {
     <ListItem>
       <ListItemIcon>{icon}</ListItemIcon>
       <ListItemText>
-        <strong>
-          {new Date(history.timestamp).toLocaleString('pt-PT')} -{' '}
-        </strong>
+        <strong>{history.timestamp.toLocaleString('pt-PT')} - </strong>
         {description}
       </ListItemText>
     </ListItem>

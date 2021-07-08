@@ -4,6 +4,7 @@ import { Knex } from 'knex';
 import { FetchOrdersParams, Order } from '../../types/database';
 import db from '../database';
 import { registerListener } from '../ipcWrapper';
+import { parseDate } from '../utils';
 
 ipcMain.on(
   'db-create-order',
@@ -108,8 +109,8 @@ registerListener('db-orders-find', async (params: FetchOrdersParams) => {
         name: v.customerName,
       },
       status: v.status,
-      created_at: v.created_at,
-      updated_at: v.updated_at,
+      created_at: parseDate(v.created_at),
+      updated_at: parseDate(v.updated_at),
       notes: v.notes,
       books: [
         ...(await db
@@ -177,8 +178,8 @@ ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
         email: result[0].customerEmail,
       },
       status: result[0].status,
-      created_at: result[0].created_at,
-      updated_at: result[0].updated_at,
+      created_at: parseDate(result[0].created_at),
+      updated_at: parseDate(result[0].updated_at),
       notes: result[0].notes,
       books: await Promise.all(
         orderBooks.map(async (orderBook) => ({
@@ -188,7 +189,10 @@ ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
               .select('id', 'timestamp', 'quantity', 'type')
               .where('orders_books_id', orderBook.id)
               .from('orders_books_history')),
-          ],
+          ].map((history) => ({
+            ...history,
+            timestamp: parseDate(history.timestamp),
+          })),
         }))
       ),
     };
@@ -224,7 +228,9 @@ const recalculateOrderStatus = async (
 
   if (orderBooks.length > 0) return;
 
-  await trx('orders').update({ status: 'finished' }).where('id', id);
+  await trx('orders')
+    .update({ status: 'finished', updated_at: trx.fn.now() })
+    .where('id', id);
 };
 
 registerListener(
@@ -293,6 +299,8 @@ registerListener(
 );
 
 registerListener('db-orders-update', async ({ id, ...data }: Order) => {
-  await db('orders').update(data).where('id', id);
+  await db('orders')
+    .update({ ...data, updated_at: db.fn.now() })
+    .where('id', id);
   return true;
 });

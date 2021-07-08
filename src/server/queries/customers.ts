@@ -2,6 +2,7 @@ import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
 import db from '../database';
 import { registerListener } from '../ipcWrapper';
+import { parseDate } from '../utils';
 
 ipcMain.on('db-customers-find', async (event: IpcMainEvent) => {
   const result = await db
@@ -44,7 +45,12 @@ registerListener('db-customer-find-one', async (id: number) => {
     .select('id', 'name', 'phone', 'email', 'created_at', 'updated_at')
     .where('id', id)
     .from('customers');
-  return customerData[0];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return customerData[0].map((customer: any) => ({
+    ...customer,
+    created_at: parseDate(customer.created_at),
+    updated_at: parseDate(customer.updated_at),
+  }));
 });
 
 ipcMain.on(
