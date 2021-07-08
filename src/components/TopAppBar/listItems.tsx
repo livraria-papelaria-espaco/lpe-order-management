@@ -14,7 +14,7 @@ export const mainListItems = (
   <div>
     <LinkItem
       icon={<DashboardIcon />}
-      text="Dashboard"
+      text="Visão Geral"
       to={routes.HOME}
       exact
     />

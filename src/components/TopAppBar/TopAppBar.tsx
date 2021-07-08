@@ -74,7 +74,7 @@ export default function TopAppBar({ open, handleDrawerOpen }: Props) {
             noWrap
             className={classes.title}
           >
-            Dashboard
+            Gestão de Encomendas
           </Typography>
         </Toolbar>
       </AppBar>
