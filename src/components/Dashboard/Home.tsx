@@ -30,28 +30,28 @@ export default function Home({
         Visão Geral
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <OverviewCard
             color={orderStatus.pending.color}
             title="Em Processamento"
             value={overviewData?.pending || 0}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <OverviewCard
             color={orderStatus.ready.color}
             title="Por Notificar"
             value={overviewData?.ready || 0}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <OverviewCard
             color={orderStatus.notified.color}
             title="Notificadas"
             value={overviewData?.notified || 0}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <OverviewCard
             color={orderStatus.finished.color}
             title="Finalizadas"
