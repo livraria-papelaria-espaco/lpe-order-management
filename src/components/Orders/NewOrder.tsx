@@ -13,14 +13,17 @@ export default function NewOrder() {
   const [notes, setNotes] = useState<string>('');
 
   const addBooks = useCallback(
-    (newBooks: Book[]) => {
+    (newBooks: BookWithQuantity[] | Book[]) => {
       const updatedBooks: BookWithQuantity[] = [...books];
-      newBooks.forEach((book) => {
+      newBooks.forEach((book: BookWithQuantity | Book) => {
         const sameBook = updatedBooks.find((v) => v.isbn === book.isbn);
         if (sameBook) {
-          sameBook.quantity += 1;
+          sameBook.quantity += 'quantity' in book ? book.quantity : 1;
         } else {
-          updatedBooks.push({ ...book, quantity: 1 });
+          updatedBooks.push({
+            ...book,
+            quantity: 'quantity' in book ? book.quantity : 1,
+          });
         }
       });
       setBooks(updatedBooks);
@@ -48,7 +51,11 @@ export default function NewOrder() {
   return (
     <div>
       <ImportFromSchool addBooks={addBooks} />
-      <BookList books={books} updateQuantity={updateQuantity} />
+      <BookList
+        books={books}
+        updateQuantity={updateQuantity}
+        addBooks={addBooks}
+      />
       <CustomerSelector customer={customer} setCustomer={setCustomer} />
       <OrderNotes value={notes} setValue={setNotes} />
       <CreateOrder books={bookRecord} customer={customer} notes={notes} />

@@ -8,12 +8,13 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import DownloadIcon from '@material-ui/icons/CloudDownloadRounded';
 import EditIcon from '@material-ui/icons/EditRounded';
 import SaveIcon from '@material-ui/icons/SaveRounded';
-import DownloadIcon from '@material-ui/icons/CloudDownloadRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import { Book, BookQueryResult } from '../../../types/database';
+import { Book } from '../../../types/database';
+import { fetchBookMetadata } from '../../../utils/api';
 import BookDelete from './BookDelete';
 
 const { ipcRenderer } = require('electron');
@@ -93,36 +94,33 @@ export default function BookData({ book }: Props) {
     setEdit(false);
   };
 
-  const fetchMetadata = () => {
+  const fetchMetadata = async () => {
     setLoading(true);
-    ipcRenderer.send('utils-book-get-metadata', book.isbn);
-    ipcRenderer.once(
-      'utils-result-book-get-metadata',
-      (_: never, result: BookQueryResult) => {
-        setLoading(false);
-        if (!result) {
-          enqueueSnackbar(
-            `Não foi possível preencher automaticamente informação para este livro.`,
-            { variant: 'error' }
-          );
-          return;
-        }
-        setName(result.name ?? name);
-        setPublisher(result.publisher ?? publisher);
-        setType(result.type ?? type);
-        setSchoolYear((result.schoolYear ?? schoolYear).toString());
-        setCodePe(result.codePe ?? codePe);
-        saveChanges({
-          isbn: book.isbn,
-          name: result.name ?? name,
-          publisher: result.publisher ?? publisher,
-          type: result.type ?? type,
-          schoolYear: result.schoolYear ?? schoolYear,
-          codePe: result.codePe ?? codePe,
-          stock: parseInt(stock, 10),
-        });
-      }
-    );
+
+    const result = await fetchBookMetadata(book.isbn);
+
+    setLoading(false);
+    if (!result) {
+      enqueueSnackbar(
+        `Não foi possível preencher automaticamente informação para este livro.`,
+        { variant: 'error' }
+      );
+      return;
+    }
+    setName(result.name ?? name);
+    setPublisher(result.publisher ?? publisher);
+    setType(result.type ?? type);
+    setSchoolYear((result.schoolYear ?? schoolYear).toString());
+    setCodePe(result.codePe ?? codePe);
+    saveChanges({
+      isbn: book.isbn,
+      name: result.name ?? name,
+      publisher: result.publisher ?? publisher,
+      type: result.type ?? type,
+      schoolYear: result.schoolYear ?? schoolYear,
+      codePe: result.codePe ?? codePe,
+      stock: parseInt(stock, 10),
+    });
   };
 
   return (

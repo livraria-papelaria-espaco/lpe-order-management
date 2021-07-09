@@ -28,6 +28,9 @@ export const findAllBooks = () => fetchFromIpc<Book[]>('db-books-find');
 export const insertOrGetBooks = (books: Book[]) =>
   fetchFromIpc<Book[]>('db-books-insert-or-get', books);
 
+export const fetchBookMetadata = (isbn: string) =>
+  fetchFromIpc<Book | false>('utils-book-get-metadata', isbn);
+
 /* customers.ts */
 
 export const fetchCustomer = (id: number) =>

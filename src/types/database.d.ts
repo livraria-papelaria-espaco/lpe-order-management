@@ -30,8 +30,6 @@ export type BookPage = {
   book: Book;
 };
 
-export type BookQueryResult = Book | false;
-
 export type OrderStatus = 'pending' | 'ready' | 'notified' | 'finished';
 
 export interface Order extends Timestamp {

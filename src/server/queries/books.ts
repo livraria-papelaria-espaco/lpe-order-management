@@ -146,17 +146,6 @@ ipcMain.on('db-book-delete', async (event: IpcMainEvent, isbn: string) => {
   }
 });
 
-ipcMain.on(
-  'utils-book-get-metadata',
-  async (event: IpcMainEvent, isbn: string) => {
-    try {
-      event.reply(
-        'utils-result-book-get-metadata',
-        await getBookMetadata(isbn)
-      );
-    } catch (e) {
-      log.error('Failed to get metadata of book by ISBN', e);
-      event.reply('utils-result-book-get-metadata', false);
-    }
-  }
+registerListener('utils-book-get-metadata', (isbn: string) =>
+  getBookMetadata(isbn)
 );

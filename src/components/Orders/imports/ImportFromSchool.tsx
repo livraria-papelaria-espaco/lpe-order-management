@@ -17,7 +17,7 @@ import {
 } from '../../../utils/api';
 
 type Props = {
-  addBooks: (books: Array<Book>) => void;
+  addBooks: (books: Book[]) => void;
 };
 
 const useStyles = makeStyles((theme) => ({

@@ -13,25 +13,14 @@ import {
 import AutoFillIcon from '@material-ui/icons/SearchRounded';
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
-import { BookQueryResult } from '../../types/database';
+import { fetchBookMetadata } from '../../utils/api';
+import { isISBN } from '../../utils/books';
 
 const { ipcRenderer } = require('electron');
 
 type Props = {
   open: boolean;
   handleClose(): void;
-};
-
-const isISBN = (isbn: string) => {
-  if (!isbn || isbn.length !== 13 || !isbn.startsWith('978')) return false;
-  let sum = 0;
-  for (let i = 0; i < 12; i++) {
-    const digit = parseInt(isbn[i], 10);
-    if (i % 2 === 1) sum += 3 * digit;
-    else sum += digit;
-  }
-  const check = (10 - (sum % 10)) % 10;
-  return check === parseInt(isbn[isbn.length - 1], 10);
 };
 
 export default function BookAddDialog({ open, handleClose }: Props) {
@@ -86,29 +75,26 @@ export default function BookAddDialog({ open, handleClose }: Props) {
     }
   };
 
-  const fetchMetadata = () => {
+  const fetchMetadata = async () => {
     if (isbn) {
       setLoading(true);
-      ipcRenderer.send('utils-book-get-metadata', isbn);
-      ipcRenderer.once(
-        'utils-result-book-get-metadata',
-        (_: never, result: BookQueryResult) => {
-          setLoading(false);
-          if (!result) {
-            enqueueSnackbar(
-              `Não foi possível preencher automaticamente informação para este livro.`,
-              { variant: 'error' }
-            );
-            return;
-          }
-          setISBN(result.isbn ?? isbn);
-          setName(result.name ?? name);
-          setPublisher(result.publisher ?? publisher);
-          setType(result.type ?? type);
-          setSchoolYear((result.schoolYear ?? schoolYear).toString());
-          setCodePe(result.codePe ?? codePe);
-        }
-      );
+
+      const result = await fetchBookMetadata(isbn);
+
+      setLoading(false);
+      if (!result) {
+        enqueueSnackbar(
+          `Não foi possível preencher automaticamente informação para este livro.`,
+          { variant: 'error' }
+        );
+        return;
+      }
+      setISBN(result.isbn ?? isbn);
+      setName(result.name ?? name);
+      setPublisher(result.publisher ?? publisher);
+      setType(result.type ?? type);
+      setSchoolYear((result.schoolYear ?? schoolYear).toString());
+      setCodePe(result.codePe ?? codePe);
     }
   };
 

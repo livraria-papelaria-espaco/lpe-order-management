@@ -1,6 +1,8 @@
 import {
   IconButton,
   makeStyles,
+  TableCell,
+  TableRow,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -8,6 +10,7 @@ import React from 'react';
 import MinusIcon from '@material-ui/icons/RemoveRounded';
 import PlusIcon from '@material-ui/icons/AddRounded';
 import { BookWithQuantity } from '../../../types/database';
+import BookTypeChip from '../../Book/BookTypeChip';
 
 type Props = {
   book: BookWithQuantity;
@@ -41,39 +44,43 @@ export default function BookItem({ book, updateQuantity }: Props) {
     book.quantity > 0 && updateQuantity(book.isbn, book.quantity - 1);
 
   return (
-    <div className={classes.root}>
-      <div>
-        <Typography variant="h6">{book.name}</Typography>
-        <Typography variant="subtitle1" color="textSecondary">
+    <TableRow>
+      <TableCell>
+        <Typography>{book.name}</Typography>
+        <Typography color="textSecondary">
           {[book.isbn, book.publisher].join(' | ')}
         </Typography>
-      </div>
-      <div className={classes.quantitySection}>
-        <IconButton
-          size="small"
-          className={classes.quantityButton}
-          onClick={decrease}
-        >
-          <MinusIcon />
-        </IconButton>
-        <TextField
-          className={classes.quantityInput}
-          type="number"
-          variant="outlined"
-          size="small"
-          InputProps={{
-            readOnly: true,
-          }}
-          value={book.quantity}
-        />
-        <IconButton
-          size="small"
-          className={classes.quantityButton}
-          onClick={increase}
-        >
-          <PlusIcon />
-        </IconButton>
-      </div>
-    </div>
+      </TableCell>
+      <TableCell>
+        <BookTypeChip type={book.type} />
+      </TableCell>
+      <TableCell>
+        <div className={classes.quantitySection}>
+          <IconButton
+            size="small"
+            className={classes.quantityButton}
+            onClick={decrease}
+          >
+            <MinusIcon />
+          </IconButton>
+          <TextField
+            className={classes.quantityInput}
+            variant="outlined"
+            size="small"
+            InputProps={{
+              readOnly: true,
+            }}
+            value={book.quantity}
+          />
+          <IconButton
+            size="small"
+            className={classes.quantityButton}
+            onClick={increase}
+          >
+            <PlusIcon />
+          </IconButton>
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }
