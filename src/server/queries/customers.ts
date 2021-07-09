@@ -46,11 +46,11 @@ registerListener('db-customer-find-one', async (id: number) => {
     .where('id', id)
     .from('customers');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return customerData[0].map((customer: any) => ({
+  return customerData.map((customer: any) => ({
     ...customer,
     created_at: parseDate(customer.created_at),
     updated_at: parseDate(customer.updated_at),
-  }));
+  }))[0];
 });
 
 ipcMain.on(

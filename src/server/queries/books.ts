@@ -101,11 +101,11 @@ ipcMain.on('db-book-find-one', async (event: IpcMainEvent, isbn: string) => {
       .from('books');
     event.reply('db-result-book-find-one', {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      book: bookData[0].map((book: any) => ({
+      book: bookData.map((book: any) => ({
         ...book,
         created_at: parseDate(book.created_at),
         updated_at: parseDate(book.updated_at),
-      })),
+      }))[0],
     });
   } catch (e) {
     log.error('Failed to find a book by ISBN', e);
