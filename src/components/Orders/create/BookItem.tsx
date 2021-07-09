@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   quantityInput: {
-    width: 50,
+    width: 75,
   },
   quantityButton: {
     margin: theme.spacing(1),
@@ -42,13 +42,19 @@ export default function BookItem({ book, updateQuantity }: Props) {
   const increase = () => updateQuantity(book.isbn, book.quantity + 1);
   const decrease = () =>
     book.quantity > 0 && updateQuantity(book.isbn, book.quantity - 1);
+  const change = (event: React.FocusEvent<HTMLInputElement>) => {
+    const qnt = Math.max(parseInt(event.target.value, 10), 0);
+    updateQuantity(book.isbn, Number.isNaN(qnt) ? 0 : qnt);
+  };
 
   return (
     <TableRow>
-      <TableCell>
+      <TableCell component="th" scope="row">
         <Typography>{book.name}</Typography>
         <Typography color="textSecondary">
-          {[book.isbn, book.publisher].join(' | ')}
+          {book.isbn}
+          {book.codePe && ` (${book.codePe})`}
+          {` | ${book.publisher}`}
         </Typography>
       </TableCell>
       <TableCell>
@@ -67,10 +73,8 @@ export default function BookItem({ book, updateQuantity }: Props) {
             className={classes.quantityInput}
             variant="outlined"
             size="small"
-            InputProps={{
-              readOnly: true,
-            }}
             value={book.quantity}
+            onChange={change}
           />
           <IconButton
             size="small"

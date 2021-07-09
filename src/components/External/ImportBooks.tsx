@@ -9,7 +9,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from '@material-ui/core';
 import MarkArrivedIcon from '@material-ui/icons/PlaceRounded';
 import { useSnackbar } from 'notistack';
@@ -17,7 +16,7 @@ import React, { useCallback } from 'react';
 import { BookWithQuantity } from '../../types/database';
 import { importBooksDistributor } from '../../utils/api';
 import BookQuantityInput from '../Book/BookQuantityInput';
-import BookTypeChip from '../Book/BookTypeChip';
+import BookItem from '../Orders/create/BookItem';
 
 interface Props {
   products: BookWithQuantity[];
@@ -56,6 +55,15 @@ export default function ImportBooks({ products, setProducts }: Props) {
     [enqueueSnackbar, setProducts]
   );
 
+  const updateQuantity = useCallback(
+    (isbn: string, quantity: number) => {
+      setProducts((books) =>
+        books.map((book) => (book.isbn === isbn ? { ...book, quantity } : book))
+      );
+    },
+    [setProducts]
+  );
+
   const handleMarkArrived = async () => {
     const success = await importBooksDistributor(products);
     if (!success) {
@@ -82,20 +90,11 @@ export default function ImportBooks({ products, setProducts }: Props) {
           </TableHead>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product.isbn}>
-                <TableCell component="th" scope="row">
-                  <Typography>{product.name}</Typography>
-                  <Typography color="textSecondary">
-                    {product.isbn}
-                    {product.codePe && ` (${product.codePe})`}
-                    {` | ${product.publisher}`}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <BookTypeChip type={product.type} />
-                </TableCell>
-                <TableCell>{product.quantity}</TableCell>
-              </TableRow>
+              <BookItem
+                key={product.isbn}
+                book={product}
+                updateQuantity={updateQuantity}
+              />
             ))}
             <BookQuantityInput addBook={addBook} />
           </TableBody>
