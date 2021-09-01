@@ -89,7 +89,9 @@ export default function ImportBooks({ products, setProducts }: Props) {
 
     enqueueSnackbar(`Livros importados com sucesso!`, { variant: 'success' });
     setProducts([]);
-    setImportOverflow(overflowBooks as BookWithQuantity[]);
+    setImportOverflow(
+      overflowBooks.length === 0 ? null : (overflowBooks as BookWithQuantity[])
+    );
   };
 
   return (
