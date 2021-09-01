@@ -7,10 +7,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from '@material-ui/core';
 import SeeIcon from '@material-ui/icons/VisibilityRounded';
 import React from 'react';
 import { useHistory } from 'react-router';
+import HelpIcon from '@material-ui/icons/HelpRounded';
 import routes from '../../constants/routes';
 import { BookOrder, Order } from '../../types/database';
 import OrderStatusChip from './OrderStatusChip';
@@ -32,7 +34,15 @@ export default function CustomerList({ orders }: Props) {
               <TableCell>Cliente</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Data</TableCell>
-              <TableCell>Qnt. Livros</TableCell>
+              <TableCell>
+                Qnt. Livros{' '}
+                <Tooltip title="Qnt. Encomendada / Qnt. Disponível / Qnt. Alvo">
+                  <HelpIcon
+                    color="action"
+                    style={{ fontSize: '1rem', verticalAlign: 'text-bottom' }}
+                  />
+                </Tooltip>
+              </TableCell>
               <TableCell padding="checkbox" align="right" />
             </TableRow>
           </TableHead>
