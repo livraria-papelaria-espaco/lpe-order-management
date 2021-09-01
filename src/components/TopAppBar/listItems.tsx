@@ -38,12 +38,12 @@ export const externalOrderListItems = (
     />
     <LinkItem
       icon={<OrderOutIcon />}
-      text="Saída de Produtos"
+      text="Encomendar Dist."
       to={routes.EXTERNAL_ORDER_OUT}
     />
     <LinkItem
       icon={<OrderInIcon />}
-      text="Entrada de Produtos"
+      text="Chegada Encomendas"
       to={routes.EXTERNAL_ORDER_IN}
     />
   </div>

@@ -1,3 +1,3 @@
 export default {
-  DRAWER_WIDTH: 240,
+  DRAWER_WIDTH: 260,
 };
