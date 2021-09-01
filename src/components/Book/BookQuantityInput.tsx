@@ -66,7 +66,6 @@ export default function BookQuantityInput({
                   type: 'other',
                   codePe: '',
                   schoolYear: -1,
-                  stock: 0,
                 });
               } else {
                 enqueueSnackbar(`${newValue} não é um ISBN válido`, {

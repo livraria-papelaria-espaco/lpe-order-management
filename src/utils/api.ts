@@ -39,7 +39,7 @@ export const fetchCustomer = (id: number) =>
 /* distributor.ts */
 
 export const importBooksDistributor = (books: BookWithQuantity[]) =>
-  fetchFromIpc<boolean>('db-distributor-import-books', books);
+  fetchFromIpc<Record<string, number>>('db-distributor-import-books', books);
 
 /* orderImports.ts */
 

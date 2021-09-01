@@ -19,7 +19,6 @@ export interface Book extends Timestamp {
   type: BookType;
   schoolYear: number;
   codePe: string;
-  stock: number;
 }
 
 interface BookWithQuantity extends Book {

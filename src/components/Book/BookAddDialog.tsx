@@ -30,7 +30,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
   const [type, setType] = useState('other');
   const [schoolYear, setSchoolYear] = useState('');
   const [codePe, setCodePe] = useState('');
-  const [stock, setStock] = useState('');
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -55,7 +54,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
             setType('other');
             setSchoolYear('');
             setCodePe('');
-            setStock('');
           } else
             enqueueSnackbar(
               `Erro ao adicionar o Livro. ISBN já existe na base de dados.`,
@@ -70,7 +68,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
         type,
         schoolYear,
         codePe,
-        stock,
       });
     }
   };
@@ -175,14 +172,6 @@ export default function BookAddDialog({ open, handleClose }: Props) {
             onChange={handleChange(setCodePe)}
             margin="dense"
             label="Código Porto Editora"
-            type="text"
-            fullWidth
-          />
-          <TextField
-            value={stock}
-            onChange={handleChange(setStock)}
-            margin="dense"
-            label="Stock Disponível para Venda"
             type="text"
             fullWidth
           />

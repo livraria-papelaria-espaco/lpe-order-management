@@ -29,7 +29,7 @@ ipcMain.on(
         await Promise.all(
           Object.entries(books).map(async ([isbn, quantity]) => {
             const bookResult = await trx
-              .select('stock')
+              .select('isbn')
               .from('books')
               .where('isbn', isbn)
               .limit(1);
@@ -37,35 +37,16 @@ ipcMain.on(
             if (bookResult.length === 0)
               throw new Error('Book with provided ISBN does not exist');
 
-            const { stock } = bookResult[0];
-
-            const availableQuantity = Math.min(stock, quantity);
-
-            const [orderBookId] = await trx
+            await trx
               .insert({
                 order_id: orderId,
                 isbn,
                 target_quantity: quantity,
-                available_quantity: availableQuantity,
-                ordered_quantity: availableQuantity,
+                available_quantity: 0,
+                ordered_quantity: 0,
                 pickedup_quantity: 0,
               })
               .into('orders_books');
-
-            if (stock !== 0) {
-              await trx('books')
-                .update({ stock: stock - availableQuantity })
-                .where('isbn', isbn);
-
-              await trx
-                .insert({
-                  orders_books_id: orderBookId,
-                  timestamp: db.fn.now(),
-                  quantity: availableQuantity,
-                  type: 'from_stock',
-                })
-                .into('orders_books_history');
-            }
           })
         );
 
@@ -162,8 +143,7 @@ ipcMain.on('db-order-find-one', async (event: IpcMainEvent, id: number) => {
         'publisher',
         'type',
         'schoolYear',
-        'codePe',
-        'stock'
+        'codePe'
       )
       .where('order_id', result[0].orderId)
       .leftJoin('books', 'orders_books.isbn', 'books.isbn')

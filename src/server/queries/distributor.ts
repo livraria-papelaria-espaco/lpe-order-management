@@ -213,7 +213,9 @@ registerListener(
   'db-distributor-import-books',
   async (books: BookWithQuantity[]) => {
     const modifiedOrderIds = new Set<number>();
-    await db.transaction(async (trx) => {
+    return db.transaction(async (trx) => {
+      const importOverflow: Record<string, number> = {};
+
       await Promise.all(
         books.map(async ({ isbn, quantity }) => {
           let remainingQuantity = quantity;
@@ -264,20 +266,15 @@ registerListener(
           );
 
           if (remainingQuantity > 0) {
-            const [book] = await trx
-              .select('stock')
-              .from('books')
-              .where('isbn', isbn);
-            await trx('books')
-              .update({ stock: book.stock + remainingQuantity })
-              .where('isbn', isbn);
+            importOverflow[isbn] = remainingQuantity;
           }
         })
       );
       await Promise.all(
         [...modifiedOrderIds].map((id) => recalculateOrderStatus(trx, id))
       );
+
+      return importOverflow;
     });
-    return true;
   }
 );

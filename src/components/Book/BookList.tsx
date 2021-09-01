@@ -51,7 +51,6 @@ export default function BookList() {
               <TableCell>Nome</TableCell>
               <TableCell>Editora</TableCell>
               <TableCell>Tipo</TableCell>
-              <TableCell>Disponível para Venda</TableCell>
               <TableCell padding="checkbox" align="right" />
             </TableRow>
           </TableHead>
@@ -72,7 +71,6 @@ export default function BookList() {
                 <TableCell>
                   <BookTypeChip type={book.type} />
                 </TableCell>
-                <TableCell>{book.stock}</TableCell>
                 <TableCell padding="checkbox" align="right">
                   <Button startIcon={<SeeIcon />} color="primary">
                     Ver&nbsp;&amp;&nbsp;Editar

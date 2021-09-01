@@ -48,7 +48,6 @@ export default function BookData({ book }: Props) {
     book?.schoolYear.toString(10) ?? ''
   );
   const [codePe, setCodePe] = useState(book?.codePe);
-  const [stock, setStock] = useState(book?.stock.toString(10) ?? '');
   const { enqueueSnackbar } = useSnackbar();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -72,7 +71,6 @@ export default function BookData({ book }: Props) {
       setType(book?.type);
       setSchoolYear(book?.schoolYear.toString(10) ?? '');
       setCodePe(book?.codePe);
-      setStock(book?.stock.toString(10) ?? '');
     });
     ipcRenderer.send('db-book-update', data);
   };
@@ -89,7 +87,6 @@ export default function BookData({ book }: Props) {
       type,
       schoolYear: parseInt(schoolYear, 10),
       codePe,
-      stock: parseInt(stock, 10),
     });
     setEdit(false);
   };
@@ -119,7 +116,6 @@ export default function BookData({ book }: Props) {
       type: result.type ?? type,
       schoolYear: result.schoolYear ?? schoolYear,
       codePe: result.codePe ?? codePe,
-      stock: parseInt(stock, 10),
     });
   };
 
@@ -204,18 +200,6 @@ export default function BookData({ book }: Props) {
             label="Código Porto Editora"
             value={codePe}
             onChange={handleChange(setCodePe)}
-            InputProps={{
-              readOnly: !edit,
-            }}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Stock Disponível para Venda"
-            value={stock}
-            type="number"
-            onChange={handleChange(setStock)}
             InputProps={{
               readOnly: !edit,
             }}

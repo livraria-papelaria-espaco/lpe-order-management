@@ -1,5 +1,9 @@
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   makeStyles,
   Paper,
@@ -12,7 +16,7 @@ import {
 } from '@material-ui/core';
 import MarkArrivedIcon from '@material-ui/icons/PlaceRounded';
 import { useSnackbar } from 'notistack';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { BookWithQuantity } from '../../types/database';
 import { importBooksDistributor } from '../../utils/api';
 import BookQuantityInput from '../Book/BookQuantityInput';
@@ -38,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
 export default function ImportBooks({ products, setProducts }: Props) {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const [importOverflow, setImportOverflow] = useState<
+    BookWithQuantity[] | null
+  >(null);
+
+  const handleCloseDialog = () => setImportOverflow(null);
 
   const addBook = useCallback(
     (book: BookWithQuantity) => {
@@ -65,20 +74,46 @@ export default function ImportBooks({ products, setProducts }: Props) {
   );
 
   const handleMarkArrived = async () => {
-    const success = await importBooksDistributor(products);
-    if (!success) {
+    const overflow = await importBooksDistributor(products);
+    if (!overflow) {
       enqueueSnackbar(`Ocorreu um erro ao importar livros da distribuidora`, {
         variant: 'error',
       });
       return;
     }
 
+    const overflowBooks = Object.entries(overflow).map(([isbn, qnt]) => ({
+      ...products.find((product) => product.isbn === isbn),
+      quantity: qnt,
+    }));
+
     enqueueSnackbar(`Livros importados com sucesso!`, { variant: 'success' });
     setProducts([]);
+    setImportOverflow(overflowBooks as BookWithQuantity[]);
   };
 
   return (
     <div>
+      <Dialog open={!!importOverflow}>
+        <DialogTitle>Produtos em Excesso</DialogTitle>
+        <DialogContent>
+          Os seguintes produtos não são necessários para nenhuma encomenda e
+          estão em excesso:
+          <ul>
+            {importOverflow &&
+              importOverflow.map(({ isbn, name, quantity }) => (
+                <li key={isbn}>
+                  {name} - {isbn} x{quantity}
+                </li>
+              ))}
+          </ul>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
       <TableContainer component={Paper}>
         <Table aria-label="export products table">
           <TableHead>

@@ -90,7 +90,7 @@ const CustomerAddDialog = ({ open, handleClose, createdCallback }: Props) => {
             margin="dense"
             label="Email"
             type="email"
-            placeholder="examplo@examplo.com"
+            placeholder="exemplo@exemplo.com"
             fullWidth
           />
         </DialogContent>

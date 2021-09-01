@@ -8,7 +8,7 @@ import { parseDate } from '../utils';
 
 registerListener('db-books-find', async () => {
   const result = await db
-    .select('isbn', 'name', 'publisher', 'type', 'stock', 'codePe')
+    .select('isbn', 'name', 'publisher', 'type', 'codePe')
     .orderBy('updated_at', 'desc')
     .from('books');
   return result;
@@ -16,7 +16,6 @@ registerListener('db-books-find', async () => {
 
 type BookInsertArgs = Book & {
   schoolYear: string;
-  stock: string;
 };
 
 ipcMain.on(
@@ -32,7 +31,6 @@ ipcMain.on(
           publisher: args.publisher || '',
           type: args.type || '',
           codePe: args.codePe || '',
-          stock: parseInt(args.stock, 10) || 0,
           schoolYear: parseInt(args.schoolYear, 10) || null,
         })
         .into('books');
@@ -49,15 +47,7 @@ registerListener('db-books-insert-or-get', async (args: Book[]) => {
     return Promise.all(
       args.map(async (book) => {
         const result = await trx
-          .select(
-            'isbn',
-            'name',
-            'publisher',
-            'type',
-            'schoolYear',
-            'codePe',
-            'stock'
-          )
+          .select('isbn', 'name', 'publisher', 'type', 'schoolYear', 'codePe')
           .where('isbn', book?.isbn)
           .from('books');
         if (result.length === 0) {
@@ -70,7 +60,6 @@ registerListener('db-books-insert-or-get', async (args: Book[]) => {
               publisher: book.publisher || '',
               type: book.type || '',
               codePe: book.codePe || '',
-              stock: book.stock || 0,
               schoolYear: book.schoolYear || null,
             })
             .into('books');
@@ -93,7 +82,6 @@ ipcMain.on('db-book-find-one', async (event: IpcMainEvent, isbn: string) => {
         'type',
         'schoolYear',
         'codePe',
-        'stock',
         'created_at',
         'updated_at'
       )
@@ -124,7 +112,6 @@ ipcMain.on(
           publisher: args.publisher,
           type: args.type,
           codePe: args.codePe,
-          stock: parseInt(args.stock, 10) || 0,
           schoolYear: parseInt(args.schoolYear, 10) || null,
           updated_at: db.fn.now(),
         });
