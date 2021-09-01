@@ -35,6 +35,7 @@ export default function OrderBookList({ books }: Props) {
               <TableRow>
                 <TableCell />
                 <TableCell>Livro</TableCell>
+                <TableCell>Estado</TableCell>
                 <TableCell>Qnt. Alvo</TableCell>
                 <TableCell>Qnt. Por Encomendar</TableCell>
                 <TableCell>Qnt. Disponível</TableCell>

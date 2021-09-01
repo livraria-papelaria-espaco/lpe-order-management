@@ -12,6 +12,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUpRounded';
 import React, { useState } from 'react';
 import { BookOrder } from '../../../types/database';
 import BookOrderHistoryItem from './BookOrderHistoryItem';
+import OrderBookStatusChip from './OrderBookStatusChip';
 
 const useStyles = makeStyles((theme) => ({
   collapsibleCell: {
@@ -54,13 +55,16 @@ export default function OrderBookList({ book }: Props) {
             {` | ${book.publisher}`}
           </Typography>
         </TableCell>
+        <TableCell>
+          <OrderBookStatusChip orderBook={book} />
+        </TableCell>
         <TableCell>{book.targetQuantity}</TableCell>
         <TableCell>{book.targetQuantity - book.orderedQuantity}</TableCell>
         <TableCell>{book.availableQuantity}</TableCell>
         <TableCell>{book.pickedupQuantity}</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell className={classes.collapsibleCell} colSpan={6}>
+        <TableCell className={classes.collapsibleCell} colSpan={7}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1} className={classes.box}>
               <Typography variant="h6" gutterBottom component="div">

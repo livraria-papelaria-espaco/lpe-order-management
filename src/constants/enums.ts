@@ -32,6 +32,25 @@ export const orderStatus = {
   },
 };
 
+export const orderBookStatus = {
+  pending: {
+    displayName: 'Por Encomendar',
+    color: '#ed823b',
+  },
+  ordered: {
+    displayName: 'Encomendado',
+    color: '#2095b2',
+  },
+  arrived: {
+    displayName: 'Por Levantar',
+    color: '#4cce2b',
+  },
+  completed: {
+    displayName: 'Levantado',
+    color: '#43a047',
+  },
+};
+
 export default {
   bookTypes,
 };
