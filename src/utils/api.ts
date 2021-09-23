@@ -1,3 +1,4 @@
+import { OrderDeleteProps } from '../types/utils.d';
 import {
   Book,
   BookWithQuantity,
@@ -67,3 +68,6 @@ export const getOrdersCountByStatus = () =>
 
 export const updateOrder = (order: Order) =>
   fetchFromIpc<boolean>('db-orders-update', order);
+
+export const calculateOrderDeleteProps = (orderId: number) =>
+  fetchFromIpc<OrderDeleteProps>('db-orders-calculate-delete-props', orderId);

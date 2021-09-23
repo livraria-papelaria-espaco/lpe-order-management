@@ -2,6 +2,7 @@ import { ipcMain, IpcMainEvent } from 'electron';
 import log from 'electron-log';
 import { Knex } from 'knex';
 import { FetchOrdersParams, Order } from '../../types/database';
+import { OrderDeleteProps } from '../../types/utils';
 import db from '../database';
 import { registerListener } from '../ipcWrapper';
 import { parseDate } from '../utils';
@@ -226,7 +227,6 @@ registerListener(
           ] = await trx
             .select(
               'id',
-              'id',
               'available_quantity as availableQuantity',
               'pickedup_quantity as pickedupQuantity'
             )
@@ -284,3 +284,42 @@ registerListener('db-orders-update', async ({ id, ...data }: Order) => {
     .where('id', id);
   return true;
 });
+
+registerListener(
+  'db-orders-calculate-delete-props',
+  async (orderId: number) => {
+    return db.transaction(async (trx) => {
+      const orderBooks = await trx
+        .select(
+          'id',
+          'isbn',
+          'ordered_quantity as orderedQuantity',
+          'available_quantity as availableQuantity',
+          'pickedup_quantity as pickedupQuantity'
+        )
+        .from('orders_books')
+        .where(' order_id', orderId);
+
+      const result: OrderDeleteProps = {
+        deleteAll: orderBooks.every((book) => book.pickedupQuantity === 0),
+        orderBooks: {},
+      };
+
+      await Promise.all(
+        orderBooks.map(async (book) => {
+          const [{ total, ordered }] = await trx('orders_books')
+            .sum({ total: 'target_quantity', ordered: 'ordered_quantity' })
+            .whereNot('order_id', orderId);
+
+          result.orderBooks[book.id] = {
+            orderedOnly: book.orderedQuantity - book.availableQuantity,
+            available: book.availableQuantity - book.pickedupQuantity,
+            ordersWaitingForBooks: total - ordered,
+          };
+        })
+      );
+
+      return result;
+    });
+  }
+);

@@ -5,6 +5,7 @@ import BackButton from '../components/BackButton';
 import Loading from '../components/Loading';
 import OrderData from '../components/Orders/OrderPage/OrderData';
 import { Order } from '../types/database';
+import { calculateOrderDeleteProps } from '../utils/api';
 
 const { ipcRenderer } = require('electron');
 
@@ -31,6 +32,10 @@ export default function OrderOnePage() {
         setData(response);
       }
     );
+
+    calculateOrderDeleteProps(parseInt(id || '', 10))
+      .then(console.log)
+      .catch(console.error);
   }, [enqueueSnackbar, history, id]);
 
   useEffect(() => {
